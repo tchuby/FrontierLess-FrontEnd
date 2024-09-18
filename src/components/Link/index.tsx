@@ -5,11 +5,11 @@ interface Props {
     href?: any
 }
 
-export default function Link({ children, href}: Props) {
+export default function Link({ children, href }: Props) {
     return (
         <div>
-            <NextLink href={href}>
-                <h1>{children}</h1>
+            <NextLink href={href} className="font-semibold text-emerald-600 hover:text-emerald-500">
+                {children}
             </NextLink>
         </div>
 
