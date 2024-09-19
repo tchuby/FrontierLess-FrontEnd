@@ -1,4 +1,5 @@
 import Link from "@/components/Link"
+import Nav from "@/components/Nav"
 
 export default function Profile() {
     return (
