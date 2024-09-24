@@ -1,3 +1,4 @@
+
 import P from '../P';
 import Image from '../Image';
 import StarAvaliation from '../StarAvaliation';
@@ -8,7 +9,8 @@ interface Props {
     valor?: string,
     data?: string,
     img?: string,
-    autor?: string
+    autor?: string,
+    onClick?: () => void
 }
 
 function getQuantEtapas() {
@@ -27,9 +29,9 @@ function getQuantAvaliacoes() {
     return `${avaliation} avaliações`
 }
 
-export default function Card({ pais, status, valor, data, img, autor }: Props) {
+export default function Card({ pais, status, valor, data, img, autor, onClick }: Props) {
     return (
-        <div className="flex items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl hover:ms-2 hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
+        <button onClick={onClick} className="flex items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl hover:ms-2 hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
             <div className="hidden md:block md:w-2/5 h-full">
                 <Image src={img} />
             </div>
@@ -55,6 +57,6 @@ export default function Card({ pais, status, valor, data, img, autor }: Props) {
                 </div>
 
             </div>
-        </div>
+        </button>
     );
 }
