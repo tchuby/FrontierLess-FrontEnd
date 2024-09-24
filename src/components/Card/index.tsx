@@ -4,12 +4,12 @@ import Image from '../Image';
 import StarAvaliation from '../StarAvaliation';
 
 interface Props {
-    pais?: string,
-    status?: string,
+    pais: string,
+    status: string,
     valor?: string,
     data?: string,
     img?: string,
-    autor?: string,
+    autor: string,
     onClick?: () => void
 }
 
@@ -31,7 +31,7 @@ function getQuantAvaliacoes() {
 
 export default function Card({ pais, status, valor, data, img, autor, onClick }: Props) {
     return (
-        <button onClick={onClick} className="flex items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl hover:ms-2 hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
+        <button onClick={onClick} className="w-full flex items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl hover:ms-2 hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
             <div className="hidden md:block md:w-2/5 h-full">
                 <Image src={img} />
             </div>
