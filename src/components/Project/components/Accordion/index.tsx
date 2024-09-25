@@ -1,11 +1,9 @@
 import { useState } from 'react';
 import Input from '@/components/Input';
 
-interface Props {
-    etapa?: any
-}
 
-export default function Accordion({etapa}: Props) {
+
+export default function Accordion() {
     const [isOpen, setIsOpen] = useState(false);
     const toggleAccordion = () => {
         setIsOpen(!isOpen);
@@ -15,7 +13,7 @@ export default function Accordion({etapa}: Props) {
         <div className="border border-slate-200 w-full">
             <button type="button" onClick={toggleAccordion} className="w-full flex justify-between items-center p-4 text-slate-800">
                 <span>
-                    <input type="text" value={etapa} id="" name=""/>
+                    <input type="text" placeholder='Etapa' id="" name=""/>
                 </span>
                 <span id="icon-1" className={`text-slate-800 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4">
