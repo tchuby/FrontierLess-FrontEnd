@@ -5,53 +5,76 @@ import Card from "@/components/Card"
 import FormSearch from "@/components/FormSearch"
 import Project from "@/components/Project";
 
-function openProject() {
-    const projectContainer = document.getElementById("projectContainer");
+type Project = {
+    key: number;
+    pais: string;
+    status: string;
+    tipo: string;
+    img: string;
+    autor: string;
+};
 
-    console.log(projectContainer);
-
-}
-
-let cont =0;
 export default function Profile() {
+    const [nProject, setNewProject] = useState<Project[]>([]);
+    const [oProject, setProject] = useState<Project[]>([]);
 
-    const [project, setProject] = useState([{}]);
+    const id = Math.floor(Math.random() * 100) + 1;
 
-    const addCard = () => {
-        const newProject = {
-            key: cont + 2,
-            pais: "AAAAA",
-            status: "Em andamento",
-            valor: "R$20.000,00",
-            data: "06/10/2001",
+    const addProject = () => {
+        const newProject: Project = {
+            key: id,
+            pais: "",
+            status: "",
+            tipo: "",
             img: "/img/australia.png",
-            autor: `${cont + 1}`,
+            autor: "",
         };
+        setNewProject([...nProject, newProject]);
+        setProject([newProject]);
+    };
 
-        setProject([...project, newProject]);
-        cont++;
+    const openProject = () => {
+        const newProject: Project = {
+            key: id,
+            pais: "Test",
+            status: "Test",
+            tipo: "Test",
+            img: "/img/australia.png",
+            autor: "Test",
+        };
+        setProject([newProject]);
+    }
+
+    const handleDeleteProject= (key: number) => {
+        const updatedProject = nProject.filter((project) => project.key !== key);
+        setNewProject(updatedProject);
+        setProject(updatedProject);
     };
 
     return (
         <div className="container mx-auto min-h-screen">
             <FormSearch />
             <div className="flex space-x-4 w-full p-4">
-                <section className="w-full min-h-screen">
+
+                <section className="w-full min-h-screen flex flex-col items-center">
                     <div className="w-full text-center mb-4">
-                        <button type="button" onClick={addCard} title="Cria Projeto" className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">+ Projetos</button>
+                        <button type="button" onClick={addProject} title="Cria Projeto" className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">+ Projetos</button>
                     </div>
-                    <Card onClick={openProject} pais="Australia" status="Em andamento" valor="R$20.000,00" data="06/10/2001" img="/img/australia.png" autor="Luan" />
-                    <Card pais="Irlanda" status="Abandonado" valor="R$10.000,00" data="09/09/2009" img="/img/irlanda.png" autor="Henrique" />
-                   
-                    {project.map((project) => (
-                        <Card key={project.key} pais={project.pais} status={project.status} valor={project.valor} data={project.data} img={project.img} autor={project.autor}/>
+
+                    {nProject.map((project) => (
+                        <Card key={project.key} project={project} onClick={openProject} />
                     ))}
 
+                </section>
+
+                <section className="w-full min-h-screen" id="projectContainer">
+
+                    {oProject.map((project) => (
+                        <Project key={project.key} project={project} onDelete={handleDeleteProject} />
+                    ))}
 
                 </section>
-                <section className="w-full min-h-screen" id="projectContainer">
-                    <Project />
-                </section>
+
             </div>
         </div>
 

@@ -2,14 +2,10 @@
 import P from '../P';
 import Image from '../Image';
 import StarAvaliation from '../StarAvaliation';
+import H2 from '../H2';
 
 interface Props {
-    pais: string,
-    status: string,
-    valor?: string,
-    data?: string,
-    img?: string,
-    autor: string,
+    project: any,
     onClick?: () => void
 }
 
@@ -17,7 +13,7 @@ function getQuantEtapas() {
 
     //TO DO
 
-    let etapas = 60;
+    let etapas = 9;
     return `${etapas} etapas`
 }
 
@@ -29,30 +25,30 @@ function getQuantAvaliacoes() {
     return `${avaliation} avaliações`
 }
 
-export default function Card({ pais, status, valor, data, img, autor, onClick }: Props) {
+export default function Card({ project, onClick }: Props) {
     return (
         <button onClick={onClick} className="w-full flex items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl hover:ms-2 hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
             <div className="hidden md:block md:w-2/5 h-full">
-                <Image src={img} />
+                <Image src={project.img} />
             </div>
             <div className="flex justify-between p-4 w-full h-full">
                 <div className="leading-normal">
-                    <h2 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{pais}</h2>
-                    <P>Status: {status}</P>
-                    <P>Valor estimado: {valor}</P>
-                    <P>Data de partida: {data}</P>
+                    <H2>{project.pais}</H2>
+                    <P>Status: {project.status}</P>
+                    <P>Tipo: {project.tipo}</P>
+                    <P>Valor: {project.valor}</P>
 
                 </div>
                 <div className='flex flex-col justify-center items-center'>
                     <P>
-                        <StarAvaliation />
+                        <StarAvaliation lock={true}/>
                         {getQuantAvaliacoes()}
                     </P>
                     <P>
                         {getQuantEtapas()}
                     </P>
                     <h4 className='font-bold tracking-tight text-gray-900 dark:text-white"'>
-                        {autor}
+                        {project.autor}
                     </h4>
                 </div>
 

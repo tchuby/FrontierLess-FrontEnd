@@ -6,13 +6,14 @@ interface Props {
 
 export default function Image({ src }: Props) {
     return (
-        <ImageNext
-            className="object-cover w-full h-auto rounded-t-lg md:rounded-none md:rounded-s-lg"
-            src={src}
-            alt=""
-            layout="responsive"
-            width={1000}
-            height={500}
-        />)
+        <div className="relative w-full h-full">
+            <ImageNext
+                className="object-cover rounded-t-lg md:rounded-none md:rounded-s-lg"
+                src={src}
+                alt=""
+                layout="fill"
+            />
+        </div>
 
+    )
 }
