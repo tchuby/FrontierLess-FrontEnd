@@ -9,37 +9,47 @@ type Project = {
     key: number;
     pais: string;
     status: string;
-    valor: string;
     tipo: string;
     img: string;
     autor: string;
 };
 
-let cont = 0;
 export default function Profile() {
     const [nProject, setNewProject] = useState<Project[]>([]);
     const [oProject, setProject] = useState<Project[]>([]);
 
-    const newProject: Project = {
-        key: cont + 1,
-        pais: "AAAAA",
-        status: "Em andamento",
-        valor: `R$${30+cont},00`,
-        tipo: "Trabalho",
-        img: "/img/australia.png",
-        autor: `${cont + 1}`,
-    };
+    const id = Math.floor(Math.random() * 100) + 1;
 
     const addProject = () => {
+        const newProject: Project = {
+            key: id,
+            pais: "",
+            status: "",
+            tipo: "",
+            img: "/img/australia.png",
+            autor: "",
+        };
         setNewProject([...nProject, newProject]);
         setProject([newProject]);
-        cont++;
     };
 
     const openProject = () => {
+        const newProject: Project = {
+            key: id,
+            pais: "Test",
+            status: "Test",
+            tipo: "Test",
+            img: "/img/australia.png",
+            autor: "Test",
+        };
         setProject([newProject]);
-        cont++;
     }
+
+    const handleDeleteProject= (key: number) => {
+        const updatedProject = nProject.filter((project) => project.key !== key);
+        setNewProject(updatedProject);
+        setProject(updatedProject);
+    };
 
     return (
         <div className="container mx-auto min-h-screen">
@@ -60,7 +70,7 @@ export default function Profile() {
                 <section className="w-full min-h-screen" id="projectContainer">
 
                     {oProject.map((project) => (
-                        <Project key={project.key} project={project} />
+                        <Project key={project.key} project={project} onDelete={handleDeleteProject} />
                     ))}
 
                 </section>

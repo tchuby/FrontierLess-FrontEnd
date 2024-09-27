@@ -2,6 +2,7 @@
 import P from '../P';
 import Image from '../Image';
 import StarAvaliation from '../StarAvaliation';
+import H2 from '../H2';
 
 interface Props {
     project: any,
@@ -12,7 +13,7 @@ function getQuantEtapas() {
 
     //TO DO
 
-    let etapas = 60;
+    let etapas = 9;
     return `${etapas} etapas`
 }
 
@@ -32,15 +33,15 @@ export default function Card({ project, onClick }: Props) {
             </div>
             <div className="flex justify-between p-4 w-full h-full">
                 <div className="leading-normal">
-                    <h2 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{project.pais}</h2>
+                    <H2>{project.pais}</H2>
                     <P>Status: {project.status}</P>
-                    <P>Valor estimado: {project.valor}</P>
                     <P>Tipo: {project.tipo}</P>
+                    <P>Valor: {project.valor}</P>
 
                 </div>
                 <div className='flex flex-col justify-center items-center'>
                     <P>
-                        <StarAvaliation />
+                        <StarAvaliation lock={true}/>
                         {getQuantAvaliacoes()}
                     </P>
                     <P>
