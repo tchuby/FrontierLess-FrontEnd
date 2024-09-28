@@ -58,7 +58,7 @@ export default function Profile() {
 
                 <section className="w-full min-h-screen flex flex-col items-center">
                     <div className="w-full text-center mb-4">
-                        <button type="button" onClick={addProject} title="Cria Projeto" className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">+ Projetos</button>
+                        <button type="button" onClick={addProject} title="Cria Projeto" className="hover:text-blue-900 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">+ Projetos</button>
                     </div>
 
                     {nProject.map((project) => (
