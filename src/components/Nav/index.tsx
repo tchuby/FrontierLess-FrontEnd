@@ -15,8 +15,8 @@ export default function Nav() {
                 <MenuIcon onClick={toggleMenu} />
                 <div className="flex space-x-4 flex-1 hidden sm:ml-6 sm:block items-center justify-center sm:items-stretch sm:justify-start">
                     <LinkMenu href="/" >Início</LinkMenu>
-                    <LinkMenu href="/pages/profile" >Perfil</LinkMenu>
-                    <LinkMenu href="/findProfect" >Buscar Projetos</LinkMenu>
+                    <LinkMenu href="/profile" >Perfil</LinkMenu>
+                    <LinkMenu href="/findProject" >Buscar Projetos</LinkMenu>
                 </div>
                 <div></div>
                 <div className="flex">

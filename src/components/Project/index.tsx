@@ -12,10 +12,9 @@ type Etapa = {
     description: string;
 };
 
-
 interface Props {
     project: any,
-    onDelete: (key: number) => void;
+    onDelete?: (key: number) => void;
 }
 
 let cont = 0;
@@ -47,10 +46,11 @@ export default function Project({ project, onDelete }: Props) {
     };
 
     const handleConfirmDelete = () => {
-        onDelete(project.key);
+        if (onDelete) {
+            onDelete(project.key);
+        }
         setIsPopupOpen(false);
     };
-
     return (
         <form>
             <div className="border-b border-gray-900/10 pb-12">
@@ -61,13 +61,13 @@ export default function Project({ project, onDelete }: Props) {
                 </div>
 
                 <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <Select id="status" name="status" label="Status" >
+                    <Select id="status" name="status" label="Status" disabled={project.locked}>
                         <option value="progredindo">Progredindo</option>
                         <option value="hiato">Hiato</option>
                         <option value="finalizado">Finalizado</option>
                         <option value="abandonado">Abandonado</option>
                     </Select>
-                    <Select id="tipo" name="exchangeType" label="Tipo">
+                    <Select id="tipo" name="exchangeType" label="Tipo" disabled={project.locked}>
                         <option value="idioma">Idioma</option>
                         <option value="escola">Escola</option>
                         <option value="faculdade">Faculdade</option>
@@ -83,7 +83,7 @@ export default function Project({ project, onDelete }: Props) {
 
             <div>
                 <div className="w-full text-center mb-4">
-                    <button type="button" onClick={addEtapa} title="Adicionar Etapa" className="mt-5 text-2xl font-bold tracking-tight text-gray-900 dark:text-white hover:text-blue-900">+ Etapas</button>
+                    <button disabled={project.locked} type="button" onClick={addEtapa} title="Adicionar Etapa" className="mt-5 text-2xl font-bold tracking-tight text-gray-900 dark:text-white hover:text-blue-900">+ Etapas</button>
                 </div>
                 {etapas.map((etapa) => (
                     <Accordion key={etapa.key} etapa={etapa} onDelete={handleDeleteEtapa} />
@@ -91,15 +91,15 @@ export default function Project({ project, onDelete }: Props) {
             </div>
 
             <div className="mt-4 flex flex-col md:flex-row items-center justify-between border-b border-gray-900/10">
-                <button type="button" onClick={handleDeleteClick} className="text-sm bg-transparent hover:text-red-700 text-red-500 py-2 px-4 mb-4 md:mb-0 md:mr-4">
+                <button disabled={project.locked} type="button" onClick={handleDeleteClick} className="text-sm bg-transparent hover:text-red-700 text-red-500 py-2 px-4 mb-4 md:mb-0 md:mr-4">
                     Deletar projeto
                 </button>
                 <Popup isOpen={isPopupOpen} onClose={handleClosePopup} onConfirm={handleConfirmDelete} />
                 <div className="flex flex-col md:flex-row space-x-1">
-                    <button type="button" className="text-sm text-gray-900 bg-white hover:bg-blue-700 border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:outline-none font-bold py-1 px-2 rounded">
+                    <button disabled={project.locked} type="button" className="text-sm text-gray-900 bg-white hover:bg-blue-700 border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:outline-none font-bold py-1 px-2 rounded">
                         Cancelar
                     </button>
-                    <button type="submit" className="text-sm bg-emerald-500 hover:bg-emerald-700 text-white font-bold py-1 px-2 rounded">
+                    <button disabled={project.locked} type="submit" className="text-sm bg-emerald-500 hover:bg-emerald-700 text-white font-bold py-1 px-2 rounded">
                         Salvar
                     </button>
                 </div>
