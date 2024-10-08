@@ -56,7 +56,7 @@ export default function Profile() {
             <FormSearch />
             <div className="flex space-x-4 w-full p-4">
 
-                <section className="w-full min-h-screen flex flex-col items-center">
+                <section className="w-full min-h-screen flex flex-col items-center shadow-lg">
                     <div className="w-full text-center mb-4">
                         <button type="button" onClick={addProject} title="Cria Projeto" className="hover:text-blue-900 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">+ Projetos</button>
                     </div>
@@ -67,7 +67,7 @@ export default function Profile() {
 
                 </section>
 
-                <section className="w-full min-h-screen" id="projectContainer">
+                <section className="w-full p-4 min-h-screen shadow-lg" id="projectContainer">
 
                     {oProject.map((project) => (
                         <Project key={project.key} project={project} onDelete={handleDeleteProject} />

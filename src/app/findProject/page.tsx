@@ -25,7 +25,7 @@ export default function Profile() {
             pais: "",
             status: "",
             tipo: "",
-            img: "/img/australia.png",
+            img: "/img/irlanda.png",
             autor: "",
             locked: true
         };
@@ -36,25 +36,21 @@ export default function Profile() {
             <FormSearch />
             <div className="flex space-x-4 w-full p-4">
 
-                <section className="w-full min-h-screen flex flex-col items-center">
+                <section className="w-full min-h-screen flex flex-col items-center shadow-lg">
                     <div className="w-full text-center mb-4">
-                        ### Filtros ###
-                        <button onClick={Add}>ADD</button>
+                        <button onClick={Add}>  ADD Test</button>
                     </div>
-                    <Card key={1} project="AAA" />
+                    {oProject.map((project) => (
+                        <Card key={project.key} project={project} />
+                    ))}
                 </section>
 
-                <section className="w-full min-h-screen" id="projectContainer">
+                <section className="w-full min-h-screen shadow-lg p-4" id="projectContainer">
                     {oProject.map((project) => (
                         <Project key={project.key} project={project} />
                     ))}
-
                 </section>
-
             </div>
         </div>
-
-
     )
-
 }
