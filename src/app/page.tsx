@@ -32,7 +32,8 @@ export default function Home() {
 
           <div className="space-y-4 mt-8 text-center">
             <p className="text-white">bem vindo ao nossa rede social Frontierless! Aqui você vai encontrar
-            sua </p>
+            sua viagem para intercâmbio, com todas as informações atualizadas!</p>
+            <p className="text-white">Se você é novo por aqui e quer ter essa experiência, aproveite e se cadastre clicando abaixo:</p>
             <Link href="/register" className="block px-6 py-3 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600">
               Ir para Cadastrar-se
             </Link>
