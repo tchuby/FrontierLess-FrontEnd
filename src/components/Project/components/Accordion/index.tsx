@@ -2,23 +2,21 @@ import { useState } from 'react';
 import TextArea from '@/components/TextArea';
 
 interface Props {
-    etapa: {
-        key: number,
+    step: {
         name: string;
         cost: string;
         description: string;
     };
-    onDelete: (key: number) => void;
-
+    onDelete: () => void;
 }
 
-export default function Accordion({ etapa, onDelete}: Props) {
+export default function Accordion({ step, onDelete}: Props) {
     const [isOpen, setIsOpen] = useState(false);
     const toggleAccordion = () => {
         setIsOpen(!isOpen);
     };
 
-    const [localEtapa, setLocalEtapa] = useState(etapa);
+    const [localEtapa, setLocalEtapa] = useState(step);
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setLocalEtapa({
@@ -53,10 +51,9 @@ export default function Accordion({ etapa, onDelete}: Props) {
                         id="cost"
                         name="cost"
                         type="text"
-                        value={localEtapa.cost}
+                        value={`R$ ${localEtapa.cost}`}
                         onChange={handleInputChange}
-                        placeholder='R$500,00'
-                        className="border-b"
+                        className="border-b text-black"
                     />
                     <div>
                         <label htmlFor="description" className="block text-sm font-medium leading-6 text-gray-900">Descriçao</label>
@@ -65,12 +62,11 @@ export default function Accordion({ etapa, onDelete}: Props) {
                             id="description"
                             value={localEtapa.description}
                             onChange={handleInputChange}
-                            placeholder="Para completar esta etapa foin necessário..."
                             rows={4}
-                            className="border w-full p-1 rounded"
+                            className="border w-full p-1 rounded text-black"
                         />
                     </div>
-                    <button type="button" onClick={() => onDelete(etapa.key)} className="text-red-700 font-bold mt-3 w-full text-right hover:text-red-800 transition-colors">Deletar Etapa</button>
+                    <button type="button" onClick={() => onDelete()} className="text-red-700 font-bold mt-3 w-full text-right hover:text-red-800 transition-colors">Deletar Etapa</button>
                 </div>
             </div>
         </div>

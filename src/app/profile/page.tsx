@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Card from "@/components/Card"
 import FormSearch from "@/components/FormSearch"
 import Project from "@/components/Project";
 
 type Project = {
-    key: number;
+    id: number;
     pais: string;
     status: string;
     tipo: string;
@@ -15,40 +15,43 @@ type Project = {
 };
 
 export default function Profile() {
-    const [nProject, setNewProject] = useState<Project[]>([]);
     const [oProject, setProject] = useState<Project[]>([]);
+    const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
-    const id = Math.floor(Math.random() * 100) + 1;
+    useEffect(() => {
+        const fetchProjects = async () => {
+            try {
+                const response = await fetch("https://07e2fc8b-a91a-47a9-a85e-f5e45e515b2e.mock.pstmn.io/myProjects");
+                const data: Project[] = await response.json();
+                setProject(data);
+            } catch (error) {
+                console.error("Erro ao buscar projetos:", error);
+            }
+        };
+        fetchProjects();
+    }, []);
+
+    const openProject = (project: Project) => {
+        setSelectedProject(project);
+    };
 
     const addProject = () => {
         const newProject: Project = {
-            key: id,
+            id: 0,
             pais: "",
             status: "",
             tipo: "",
-            img: "/img/australia.png",
+            img: "/img/brasil.png",
             autor: "",
         };
-        setNewProject([...nProject, newProject]);
-        setProject([newProject]);
+        setProject([...oProject, newProject]);
     };
 
-    const openProject = () => {
-        const newProject: Project = {
-            key: id,
-            pais: "Test",
-            status: "Test",
-            tipo: "Test",
-            img: "/img/australia.png",
-            autor: "Test",
-        };
-        setProject([newProject]);
-    }
 
-    const handleDeleteProject= (key: number) => {
-        const updatedProject = nProject.filter((project) => project.key !== key);
+    const handleDeleteProject = () => {
+        /*const updatedProject = nProject.filter((project) => project.key !== key);
         setNewProject(updatedProject);
-        setProject(updatedProject);
+        setProject(updatedProject);*/
     };
 
     return (
@@ -61,18 +64,16 @@ export default function Profile() {
                         <button type="button" onClick={addProject} title="Cria Projeto" className="hover:text-blue-900 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">+ Projetos</button>
                     </div>
 
-                    {nProject.map((project) => (
-                        <Card key={project.key} project={project} onClick={openProject} />
+                    {oProject.map((project, i) => (
+                        <Card key={i} project={project} onClick={() => openProject(project)} />
                     ))}
 
                 </section>
 
                 <section className="w-full p-4 min-h-screen shadow-lg" id="projectContainer">
-
-                    {oProject.map((project) => (
-                        <Project key={project.key} project={project} onDelete={handleDeleteProject} />
-                    ))}
-
+                    {selectedProject && (
+                        <Project key={selectedProject.id} project={selectedProject} />
+                    )}
                 </section>
 
             </div>
