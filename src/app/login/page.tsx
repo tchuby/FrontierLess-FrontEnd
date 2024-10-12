@@ -1,4 +1,4 @@
-import Form from "@/components/FormLogin";
+import FormLogin from "@/components/FormLogin";
 
 export default function Login() {
   return (
@@ -6,7 +6,7 @@ export default function Login() {
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Entrar no FrontierLess</h2>
       </div>
-      <Form />
+      <FormLogin />
     </div>
   );
 }
