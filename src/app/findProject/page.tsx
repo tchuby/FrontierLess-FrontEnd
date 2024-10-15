@@ -37,6 +37,7 @@ export default function findProject() {
         setSelectedProject(project);
     };
 
+    const findProject = true;
 
     return (
         <div className="container mx-auto min-h-screen">
@@ -51,7 +52,7 @@ export default function findProject() {
 
                 <section className="w-full min-h-screen shadow-lg p-4" id="projectContainer">
                     {selectedProject && (
-                        <Project key={selectedProject.id} project={selectedProject} />
+                        <Project key={selectedProject.id} project={selectedProject} findProject={findProject}/>
                     )}
                 </section>
             </div>

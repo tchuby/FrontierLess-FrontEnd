@@ -35,7 +35,7 @@ export default function Card({ project, onClick }: Props) {
                 <div className="leading-normal">
                     <H2>{project.pais}</H2>
                     <P>Status: {project.status}</P>
-                    <P>Tipo: {project.tipo}</P>
+                    <P>Tipo: {project.exchangeType}</P>
                     <P>Valor: {project.valor}</P>
 
                 </div>
