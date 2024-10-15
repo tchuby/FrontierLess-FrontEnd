@@ -31,14 +31,14 @@ export default function Comments() {
     };
 
     return (
-        <section className="bg-white dark:bg-gray-900 py-8 lg:py-16 antialiased">
-            <div className="max-w-2xl mx-auto px-4">
-                <div className="flex justify-between items-center mb-6">
+        <section className="bg-white dark:bg-gray-900 py-4 lg:py-8 antialiased">
+            <div className="mx-auto">
+                <div className="flex justify-between items-center">
                     <H2>Comentários</H2>
                 </div>
 
                 <form className="mb-6">
-                    <div className="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+                    <div className="py-2 px-4 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
                         <div className="mb-3">
                             <StarAvaliation />
                         </div>
@@ -54,10 +54,7 @@ export default function Comments() {
                 </form>
 
                 {comments.map((comment, index) => (
-                    <Comment
-                        key={index}
-                        comment={comment}
-                    />
+                    <Comment key={index} comment={comment}/>
                 ))}
             </div>
         </section>

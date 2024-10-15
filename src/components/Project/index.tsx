@@ -17,9 +17,10 @@ type Step = {
 interface Props {
     project: any,
     onDelete?: (key: number) => void;
+    findProject?: boolean,
 }
 
-export default function Project({ project, onDelete }: Props) {
+export default function Project({ project, findProject, onDelete }: Props) {
     const [steps, setSteps] = useState<Step[]>([]);
 
     const handleDeleteEtapa = () => {
@@ -53,18 +54,30 @@ export default function Project({ project, onDelete }: Props) {
                 </div>
 
                 <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <Select id="status" name="status" label="Status" disabled={project.locked}>
-                        <option value="progredindo">Progredindo</option>
+                    <Select
+                        id="status"
+                        name="status"
+                        label="Status"
+                        disabled={findProject}
+                        select={project.status}>
+                        <option value="andamento">Andamento</option>
                         <option value="hiato">Hiato</option>
                         <option value="finalizado">Finalizado</option>
                         <option value="abandonado">Abandonado</option>
                     </Select>
-                    <Select id="tipo" name="exchangeType" label="Tipo" disabled={project.locked}>
+
+                    <Select
+                        id="tipo"
+                        name="exchangeType"
+                        label="Tipo"
+                        disabled={findProject}
+                        select={project.exchangeType}>
                         <option value="idioma">Idioma</option>
                         <option value="escola">Escola</option>
                         <option value="faculdade">Faculdade</option>
                         <option value="pós-graduação">Pós-graduação</option>
                         <option value="pesquisa">Pesquisa</option>
+                        <option value="turismo">Turismo</option>
                     </Select>
                     <div>
                         <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Custo total</label>
@@ -75,16 +88,16 @@ export default function Project({ project, onDelete }: Props) {
 
             <div>
                 <div className="w-full text-center mb-4">
-                    <button disabled={project.locked} type="button" onClick={addStep} title="Adicionar Etapa" className="mt-5 text-2xl font-bold tracking-tight text-gray-900 dark:text-white hover:text-blue-900">+ Etapas</button>
+                    <button disabled={findProject} type="button" onClick={addStep} title="Adicionar Etapa" className="mt-5 text-2xl font-bold tracking-tight text-gray-900 dark:text-white hover:text-blue-900">+ Etapas</button>
                 </div>
                 {steps.map((step, i) => (
                     <Accordion key={i} step={step} onDelete={handleDeleteEtapa} />
                 ))}
             </div>
 
-            {!project.locked && (
+            {!findProject && (
                 <>
-                    <div className="mt-4 flex flex-col md:flex-row items-center justify-between border-b border-gray-900/10">
+                    <div className="mt-4 pb-4 flex flex-col md:flex-row items-center justify-between border-b border-gray-900/10">
                         <DeleteButton onDelete={onDelete} project={project} />
                         <div className="flex flex-col md:flex-row space-x-1">
                             <SaveButton />
@@ -94,7 +107,7 @@ export default function Project({ project, onDelete }: Props) {
                 </>
             )}
 
-            {project.locked && (
+            {findProject && (
                 <Button type="button">
                     Seguir Projeto
                 </Button>
