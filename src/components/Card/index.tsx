@@ -41,14 +41,14 @@ export default function Card({ project, onClick }: Props) {
                 </div>
                 <div className='flex flex-col justify-center items-center'>
                     <P>
-                        <StarAvaliation lock={true}/>
+                        <StarAvaliation disabled={true}/>
                         {getQuantAvaliacoes()}
                     </P>
                     <P>
                         {getQuantEtapas()}
                     </P>
                     <h4 className='font-bold tracking-tight text-gray-900 dark:text-white"'>
-                        {project.autor}
+                        {project.author}
                     </h4>
                 </div>
 

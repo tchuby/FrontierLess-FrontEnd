@@ -8,38 +8,44 @@ function getNotaMedia() {
 }
 
 interface Props {
-    lock?: boolean;  // Propriedade para bloquear a interação
+    note?: number;
+    disabled?: boolean;
 }
 
-export default function StarAvaliation({ lock }: Props) {
+export default function StarAvaliation({ note, disabled }: Props) {
     const [hoveredStars, setHoveredStars] = useState(0);
     const [selectedStars, setSelectedStars] = useState(getNotaMedia());
 
     const handleMouseEnter = (index: number) => {
-        if (!lock) {
+        if (!disabled) {
             setHoveredStars(index + 1);
         }
     };
     const handleMouseLeave = () => {
-        if (!lock) {
+        if (!disabled) {
             setHoveredStars(0);
         }
     };
     const handleClick = (index: number) => {
-        if (!lock) {
+        if (!disabled) {
             setSelectedStars(index + 1);
         }
     };
 
     return (
         <div className="flex items-center">
-            {Array.from({ length: 5 }, (_, i) => (
+            {note && Array.from({ length: 5 }, (_, i) => (
+                <div>
+                    {i < note ? <StarTrue /> : <StarFalse />}
+                </div>
+            ))}
+
+            {!note && Array.from({ length: 5 }, (_, i) => (
                 <div
                     key={i}
                     onMouseEnter={() => handleMouseEnter(i)}
                     onMouseLeave={handleMouseLeave}
-                    onClick={() => handleClick(i)}
-                >
+                    onClick={() => handleClick(i)}>
                     {i < (hoveredStars || selectedStars) ? <StarTrue /> : <StarFalse />}
                 </div>
             ))}
