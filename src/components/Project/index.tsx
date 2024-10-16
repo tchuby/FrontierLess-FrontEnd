@@ -50,7 +50,7 @@ export default function Project({ project, findProject, onDelete }: Props) {
                 <div className="flex justify-between">
                     <input type="text" name="destination" value={project.pais} hidden />
                     <H2>{project.pais}</H2>
-                    <H2>{project.autor}</H2>
+                    <H2>{project.author}</H2>
                 </div>
 
                 <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -114,7 +114,7 @@ export default function Project({ project, findProject, onDelete }: Props) {
             )}
 
             <div >
-                <Comments />
+                <Comments pComments={project.comments}/>
             </div>
         </form>
     )

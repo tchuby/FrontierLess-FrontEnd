@@ -11,7 +11,7 @@ type Project = {
     status: string;
     tipo: string;
     img: string;
-    autor: string;
+    author: string;
 };
 
 

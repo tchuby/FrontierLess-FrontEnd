@@ -11,7 +11,7 @@ type Project = {
     status: string;
     tipo: string;
     img: string;
-    autor: string;
+    author: string;
 };
 
 export default function Profile() {
@@ -42,7 +42,7 @@ export default function Profile() {
             status: "",
             tipo: "",
             img: "/img/brasil.png",
-            autor: "",
+            author: "",
         };
         setProject([...oProject, newProject]);
     };

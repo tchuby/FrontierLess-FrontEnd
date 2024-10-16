@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import H2 from "../H2";
 import Button from "../Button";
 import TextArea from "../TextArea";
@@ -8,22 +8,34 @@ import Comment from "./components/Comment";
 type Comment = {
     note: number;
     comment: string;
-    publicationDate: Date;
+    date: Date;
+    author: string;
 };
 
-export default function Comments() {
+interface Props {
+    pComments: any;
+}
+
+export default function Comments({ pComments }: Props) {
     const [comments, setComments] = useState<Comment[]>([]);
     const [textAreaValue, setTextAreaValue] = useState("");
 
+    useEffect(() => {
+        if (pComments) {
+            setComments(pComments);
+        }
+    }, [pComments]);
+
     const addComment = (event: React.FormEvent) => {
         event.preventDefault();
-
+        
         if (textAreaValue.trim() === "") return;
 
         const newComment: Comment = {
-            note: 5,
+            author: 'xxx',
             comment: textAreaValue,
-            publicationDate: new Date(),
+            note: 5,
+            date: new Date()
         };
 
         setComments([...comments, newComment]);
@@ -37,7 +49,7 @@ export default function Comments() {
                     <H2>Comentários</H2>
                 </div>
 
-                <form className="mb-6">
+                <form className="mb-6" onSubmit={addComment}>
                     <div className="py-2 px-4 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
                         <div className="mb-3">
                             <StarAvaliation />
@@ -50,7 +62,7 @@ export default function Comments() {
                             placeholder="Deixe seu comentário..."
                         />
                     </div>
-                    <Button type="submit" onClick={() => addComment} >Postar comentário</Button>
+                    <Button type="submit">Postar comentário</Button>
                 </form>
 
                 {comments.map((comment, index) => (
