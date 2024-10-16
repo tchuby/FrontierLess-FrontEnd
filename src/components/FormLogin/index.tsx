@@ -2,14 +2,16 @@ import Button from "../Button";
 import Input from "../Input";
 import Link from "../Link";
 
-export default function Form() {
+interface Props {
+    submit: (event: React.FormEvent<HTMLFormElement>) => void;
+}
+
+export default function FormLogin({ submit }: Props) {
     return (
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-
-            <form className="space-y-6" action="#" method="POST">
+            <form className="space-y-6" onSubmit={submit}>
                 <Input id="email" name="email" type="email">Email</Input>
                 <Input id="password" name="password" type="password">Senha</Input>
-                
                 <Button type="submit">Entrar</Button>
             </form>
 
