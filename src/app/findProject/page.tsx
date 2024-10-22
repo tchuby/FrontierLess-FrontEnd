@@ -4,27 +4,18 @@ import React, { useState, useEffect } from 'react';
 import Card from "@/components/Card"
 import FormSearch from "@/components/FormSearch"
 import Project from "@/components/Project";
-
-type Project = {
-    id: number;
-    pais: string;
-    status: string;
-    tipo: string;
-    img: string;
-    author: string;
-};
-
+import iProject from "@/types/iProject"
 
 export default function findProject() {
-    const [oProject, setProject] = useState<Project[]>([]);
-    const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+    const [oProject, setProject] = useState<iProject[]>([]);
+    const [selectedProject, setSelectedProject] = useState<iProject | null>(null);
 
 
     useEffect(() => {
         const fetchProjects = async () => {
             try {
                 const response = await fetch("https://07e2fc8b-a91a-47a9-a85e-f5e45e515b2e.mock.pstmn.io/project");
-                const data: Project[] = await response.json();
+                const data: iProject[] = await response.json();
                 setProject(data);
             } catch (error) {
                 console.error("Erro ao buscar projetos:", error);
@@ -33,7 +24,7 @@ export default function findProject() {
         fetchProjects();
     }, []);
 
-    const openProject = (project: Project) => {
+    const openProject = (project: iProject) => {
         setSelectedProject(project);
     };
 

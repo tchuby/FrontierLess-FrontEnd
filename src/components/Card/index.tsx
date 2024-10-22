@@ -6,7 +6,8 @@ import H2 from '../H2';
 
 interface Props {
     project: any,
-    onClick?: () => void
+    onClick?: () => void,
+    totalCost: number
 }
 
 function getQuantEtapas() {
@@ -25,7 +26,7 @@ function getQuantAvaliacoes() {
     return `${avaliation} avaliações`
 }
 
-export default function Card({ project, onClick }: Props) {
+export default function Card({ project, totalCost, onClick }: Props) {
     return (
         <button onClick={onClick} className="w-full flex items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl hover:ms-2 hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
             <div className="hidden md:block md:w-2/5 h-full">
@@ -36,7 +37,7 @@ export default function Card({ project, onClick }: Props) {
                     <H2>{project.pais}</H2>
                     <P>Status: {project.status}</P>
                     <P>Tipo: {project.exchangeType}</P>
-                    <P>Valor: {project.valor}</P>
+                    <P>Valor: {totalCost}</P>
 
                 </div>
                 <div className='flex flex-col justify-center items-center'>

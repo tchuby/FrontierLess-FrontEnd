@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+
 import Select from '../Select';
 import Accordion from "./components/Accordion";
 import H2 from '../H2';
@@ -7,30 +8,26 @@ import SaveButton from './components/SaveButton';
 import CancelButton from './components/CancelButton';
 import DeleteButton from './components/DeleteButton';
 import Button from '../Button';
-
-type Step = {
-    name: string;
-    cost: string;
-    description: string;
-};
+import iStep from "@/types/iStep"
 
 interface Props {
     project: any,
     onDelete?: (key: number) => void;
     findProject?: boolean,
+    totalCost: number
 }
 
-export default function Project({ project, findProject, onDelete }: Props) {
-    const [steps, setSteps] = useState<Step[]>([]);
+export default function Project({ project, findProject, totalCost, onDelete }: Props) {
+    const [steps, setSteps] = useState<iStep[]>([]);
 
     const handleDeleteEtapa = () => {
         /*    const updatedEtapas = steps.filter((step) => step.key !== key);
             setSteps(updatedEtapas);*/
     };
 
-    const newStep: Step = {
+    const newStep: iStep = {
         name: "",
-        cost: "",
+        cost: 0,
         description: ""
     };
 
@@ -81,7 +78,7 @@ export default function Project({ project, findProject, onDelete }: Props) {
                     </Select>
                     <div>
                         <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Custo total</label>
-                        <h2 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">R$ 200.000,00</h2>
+                        <h2 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">{totalCost}</h2>
                     </div>
                 </div>
             </div>
@@ -114,7 +111,7 @@ export default function Project({ project, findProject, onDelete }: Props) {
             )}
 
             <div >
-                <Comments pComments={project.comments}/>
+                <Comments pComments={project.comments} />
             </div>
         </form>
     )
