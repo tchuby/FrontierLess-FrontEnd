@@ -12,12 +12,10 @@ import iStep from "@/types/iStep"
 
 interface Props {
     project: any,
-    onDelete?: (key: number) => void;
-    findProject?: boolean,
-    totalCost: number
+    findProject?: boolean
 }
 
-export default function Project({ project, findProject, totalCost, onDelete }: Props) {
+export default function Project({ project, findProject }: Props) {
     const [steps, setSteps] = useState<iStep[]>([]);
 
     const handleDeleteEtapa = () => {
@@ -26,6 +24,7 @@ export default function Project({ project, findProject, totalCost, onDelete }: P
     };
 
     const newStep: iStep = {
+        id: 0,
         name: "",
         cost: 0,
         description: ""
@@ -78,7 +77,7 @@ export default function Project({ project, findProject, totalCost, onDelete }: P
                     </Select>
                     <div>
                         <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Custo total</label>
-                        <h2 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">{totalCost}</h2>
+                        <h2 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">{`R$${project.totalCost}`}</h2>
                     </div>
                 </div>
             </div>
@@ -88,14 +87,14 @@ export default function Project({ project, findProject, totalCost, onDelete }: P
                     <button disabled={findProject} type="button" onClick={addStep} title="Adicionar Etapa" className="mt-5 text-2xl font-bold tracking-tight text-gray-900 dark:text-white hover:text-blue-900">+ Etapas</button>
                 </div>
                 {steps.map((step, i) => (
-                    <Accordion key={i} step={step} onDelete={handleDeleteEtapa} />
+                    <Accordion key={project.id} step={step} index={project.id}/>
                 ))}
             </div>
 
             {!findProject && (
                 <>
                     <div className="mt-4 pb-4 flex flex-col md:flex-row items-center justify-between border-b border-gray-900/10">
-                        <DeleteButton onDelete={onDelete} project={project} />
+                        <DeleteButton project={project} />
                         <div className="flex flex-col md:flex-row space-x-1">
                             <SaveButton />
                             <CancelButton />
@@ -111,7 +110,7 @@ export default function Project({ project, findProject, totalCost, onDelete }: P
             )}
 
             <div >
-                <Comments pComments={project.comments} />
+                <Comments project={project} />
             </div>
         </form>
     )

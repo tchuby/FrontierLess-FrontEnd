@@ -1,24 +1,31 @@
 import { useState } from 'react';
+import { useProject } from "@/contexts/ProjectContext";
+
 import iStep from "@/types/iStep"
 
 interface Props {
     step: iStep;
-    onDelete: () => void;
+    index: number
 }
 
-export default function Accordion({ step, onDelete}: Props) {
+export default function Accordion({ step, index }: Props) {
     const [isOpen, setIsOpen] = useState(false);
     const toggleAccordion = () => {
         setIsOpen(!isOpen);
     };
 
     const [localEtapa, setLocalEtapa] = useState(step);
+
+    const { getTotalCost } = useProject();
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
-        setLocalEtapa({
-            ...localEtapa,
-            [name]: value,
-        });
+        setLocalEtapa({ ...localEtapa, [name]: value });
+
+        if (name === "cost") {
+            const uCost = parseFloat(value) || 0;
+            getTotalCost(uCost, index, step.id);
+        }
     };
 
     return (
@@ -62,7 +69,7 @@ export default function Accordion({ step, onDelete}: Props) {
                             className="border w-full p-1 rounded text-black"
                         />
                     </div>
-                    <button type="button" onClick={() => onDelete()} className="text-red-700 font-bold mt-3 w-full text-right hover:text-red-800 transition-colors">Deletar Etapa</button>
+                    <button type="button" className="text-red-700 font-bold mt-3 w-full text-right hover:text-red-800 transition-colors">Deletar Etapa</button>
                 </div>
             </div>
         </div>

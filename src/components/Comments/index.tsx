@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useProject } from "@/contexts/ProjectContext";
 import H2 from "../H2";
 import Button from "../Button";
 import TextArea from "../TextArea";
@@ -13,22 +14,30 @@ type Comment = {
 };
 
 interface Props {
-    pComments: any;
+    project: any;
 }
 
-export default function Comments({ pComments }: Props) {
+export default function Comments({ project }: Props) {
     const [comments, setComments] = useState<Comment[]>([]);
     const [textAreaValue, setTextAreaValue] = useState("");
 
+    const { getQuantComment } = useProject();
+
     useEffect(() => {
-        if (pComments) {
-            setComments(pComments);
+        if (project.comments) {
+            setComments(project.comments);
         }
-    }, [pComments]);
+    }, [project.comments]);
+
+    useEffect(() => {
+        if (project && getQuantComment) {
+            getQuantComment(comments.length, project.id);
+        }
+    }, [comments.length, project?.id]);
 
     const addComment = (event: React.FormEvent) => {
         event.preventDefault();
-        
+
         if (textAreaValue.trim() === "") return;
 
         const newComment: Comment = {
@@ -66,7 +75,7 @@ export default function Comments({ pComments }: Props) {
                 </form>
 
                 {comments.map((comment, index) => (
-                    <Comment key={index} comment={comment}/>
+                    <Comment key={index} comment={comment} />
                 ))}
             </div>
         </section>

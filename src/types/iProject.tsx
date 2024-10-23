@@ -5,4 +5,17 @@ export default interface iProject {
     tipo: string;
     img: string;
     author: string;
+    steps?: [
+        {
+            id?: number;
+            name?: string;
+            description?: string;
+            cost?: number;
+        }
+    ];
+    comments?: [{}];
+    totalCost?: number;
+    quantComments?: number;
+    note?: number;
+
 }
