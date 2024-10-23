@@ -1,28 +1,31 @@
 import { useState } from 'react';
-import TextArea from '@/components/TextArea';
+import { useProject } from "@/contexts/ProjectContext";
+
+import iStep from "@/types/iStep"
 
 interface Props {
-    step: {
-        name: string;
-        cost: string;
-        description: string;
-    };
-    onDelete: () => void;
+    step: iStep;
+    index: number
 }
 
-export default function Accordion({ step, onDelete}: Props) {
+export default function Accordion({ step, index }: Props) {
     const [isOpen, setIsOpen] = useState(false);
     const toggleAccordion = () => {
         setIsOpen(!isOpen);
     };
 
     const [localEtapa, setLocalEtapa] = useState(step);
+
+    const { getTotalCost } = useProject();
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
-        setLocalEtapa({
-            ...localEtapa,
-            [name]: value,
-        });
+        setLocalEtapa({ ...localEtapa, [name]: value });
+
+        if (name === "cost") {
+            const uCost = parseFloat(value) || 0;
+            getTotalCost(uCost, index, step.id);
+        }
     };
 
     return (
@@ -36,7 +39,7 @@ export default function Accordion({ step, onDelete}: Props) {
                         name="name"
                         value={localEtapa.name}
                         onChange={handleInputChange}
-                        className="w-full font-bold"/>
+                        className="w-full font-bold" />
                 </span>
                 <span id="icon-1" className={`text-slate-800 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4">
@@ -46,12 +49,12 @@ export default function Accordion({ step, onDelete}: Props) {
             </button>
             <div id="content-1" className={`px-4 overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-100' : 'max-h-0'}`} >
                 <div className="text-sm text-slate-500 pb-3">
-                    <label htmlFor="dcostescription" className="block text-sm font-medium leading-6 text-gray-900">Custo</label>
+                    <label htmlFor="cost" className="block text-sm font-medium leading-6 text-gray-900">Custo</label>
                     <input
                         id="cost"
                         name="cost"
                         type="text"
-                        value={`R$ ${localEtapa.cost}`}
+                        value={localEtapa.cost}
                         onChange={handleInputChange}
                         className="border-b text-black"
                     />
@@ -66,7 +69,7 @@ export default function Accordion({ step, onDelete}: Props) {
                             className="border w-full p-1 rounded text-black"
                         />
                     </div>
-                    <button type="button" onClick={() => onDelete()} className="text-red-700 font-bold mt-3 w-full text-right hover:text-red-800 transition-colors">Deletar Etapa</button>
+                    <button type="button" className="text-red-700 font-bold mt-3 w-full text-right hover:text-red-800 transition-colors">Deletar Etapa</button>
                 </div>
             </div>
         </div>

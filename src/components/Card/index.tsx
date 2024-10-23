@@ -6,23 +6,7 @@ import H2 from '../H2';
 
 interface Props {
     project: any,
-    onClick?: () => void
-}
-
-function getQuantEtapas() {
-
-    //TO DO
-
-    let etapas = 9;
-    return `${etapas} etapas`
-}
-
-function getQuantAvaliacoes() {
-
-    //TO DO
-
-    let avaliation = 10;
-    return `${avaliation} avaliações`
+    onClick?: () => void,
 }
 
 export default function Card({ project, onClick }: Props) {
@@ -36,16 +20,16 @@ export default function Card({ project, onClick }: Props) {
                     <H2>{project.pais}</H2>
                     <P>Status: {project.status}</P>
                     <P>Tipo: {project.exchangeType}</P>
-                    <P>Valor: {project.valor}</P>
+                    <P>Valor: {`R$${project.totalCost}`}</P>
 
                 </div>
                 <div className='flex flex-col justify-center items-center'>
                     <P>
                         <StarAvaliation disabled={true}/>
-                        {getQuantAvaliacoes()}
+                        {`${project.quantComments} Commentarios`}
                     </P>
                     <P>
-                        {getQuantEtapas()}
+                        {50}
                     </P>
                     <h4 className='font-bold tracking-tight text-gray-900 dark:text-white"'>
                         {project.author}
