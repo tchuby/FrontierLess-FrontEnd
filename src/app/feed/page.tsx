@@ -2,26 +2,33 @@
 
 import Link from "@/components/Link";
 import React, { useState } from "react";
+import Profile from "@/components/Profile"; // Importando Profile
 
-interface Item {
+type Project = {
   key: number;
-  title: string;
+  pais: string;
+  status: string;
+  tipo: string;
   img: string;
-  description: string;
-}
+  autor: string;
+};
 
-const initialItems: Item[] = [
+const initialItems: Project[] = [
   {
     key: 1,
-    title: "Projeto 1",
+    pais: "",
+    status: "",
+    tipo: "",
     img: "/img/australia.png",
-    description: "Descrição do Projeto 1",
+    autor: "",
   },
   {
     key: 2,
-    title: "Projeto 2",
-    img: "/img/imagem-roma.jpg",
-    description: "Descrição do Projeto 2",
+    pais: "",
+    status: "",
+    tipo: "",
+    img: "/img/australia.png",
+    autor: "",
   },
   // Adicione mais itens conforme necessário
 ];
@@ -30,6 +37,9 @@ export default function Feed() {
   const [selectedProject, setSelectedProject] = useState<Item | null>(null);
   const [comments, setComments] = useState<string[]>([]);
   const [newComment, setNewComment] = useState("");
+
+  // Simula pegar os projetos do Profile
+  const [projectsFromProfile, setProjectsFromProfile] = useState(initialItems); // Aqui você pode pegar os projetos reais do Profile
 
   const handleProjectClick = (project: Item) => {
     setSelectedProject(project);
@@ -51,7 +61,7 @@ export default function Feed() {
           <h1 className="text-3xl font-bold">Feed de Projetos</h1>
         </div>
         <div className="grid grid-cols-1 gap-6">
-          {initialItems.map((item) => (
+          {projectsFromProfile.map((item) => (
             <div
               key={item.key}
               className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer"
@@ -102,7 +112,7 @@ export default function Feed() {
           </div>
         )}
       </div>
-      
+
       <div className="mt-6 text-center w-full">
         <Link href="/" className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600">
           Ir para Home
