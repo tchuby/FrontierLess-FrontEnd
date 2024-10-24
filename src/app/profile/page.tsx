@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { getMyProjects } from "@/services/projectServices";
+import { getProjects } from "@/services/projectServices";
 import { useProject } from "@/contexts/ProjectContext";
 
 import Card from "@/components/Card"
@@ -16,8 +16,8 @@ export default function Profile() {
     useEffect(() => {
         const loadProjects = async () => {
             try {
-                const projects = await getMyProjects();
-                setProject(projects);
+                const projects = await getProjects();
+                setProject(projects.projects);
             } catch (error) {
                 console.error("Erro ao buscar projetos:", error);
             }
@@ -60,6 +60,7 @@ export default function Profile() {
                     {project.map((project) => (
                         <Card key={project.id} project={project} onClick={() => openProject(project)} />
                     ))}
+
                 </section>
 
                 <section className="w-full p-4 min-h-screen shadow-lg" id="projectContainer">
