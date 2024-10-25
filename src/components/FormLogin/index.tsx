@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { login } from "@/services/authServices"
+import { useUser } from "@/contexts/UserContext";
 
 import Button from "../Button";
 import Input from "../Input";
 import Link from "../Link";
 
 export default function FormLogin() {
+    const { setUser } = useUser();
+
     const [formData, setFormData] = useState({
         email: "",
         password: ""
@@ -15,19 +18,20 @@ export default function FormLogin() {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handlelogin = async (e: React.FormEvent) => {
         e.preventDefault();
-
         try {
             const data = await login(formData);
-            console.log("User logged in successfully:", data);
+            setUser(data.user);
+            console.log(">>>:", data.message);
         } catch (error) {
-            console.error("error when logging in user: ", error);
+            console.error(">>>:", error);
         }
     };
+
     return (
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-            <form className="space-y-6" onSubmit={handleSubmit}>
+            <form className="space-y-6" onSubmit={handlelogin}>
                 <Input id="email" name="email" type="email" onChange={handleChange}>Email</Input>
                 <Input id="password" name="password" type="password" onChange={handleChange}>Senha</Input>
                 <Button type="submit">Entrar</Button>

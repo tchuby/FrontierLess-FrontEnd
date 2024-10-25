@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import Select from '../Select';
 import Accordion from "./components/Accordion";
@@ -30,15 +30,18 @@ export default function Project({ project, findProject }: Props) {
         description: ""
     };
 
+    const addStep = () => {
+        setSteps([...steps, newStep]);
+    };
+
+
+
     useEffect(() => {
         if (project.steps) {
             setSteps(project.steps);
         }
     }, [project.steps]);
 
-    const addStep = () => {
-        setSteps([...steps, newStep]);
-    };
 
     return (
         <form>

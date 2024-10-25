@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useProject } from "@/contexts/ProjectContext";
-import { useUser } from '@/contexts/userContext';
+import { useUser } from '@/contexts/UserContext';
 
 import Card from "@/components/Card"
 import FormSearch from "@/components/FormSearch"
@@ -10,13 +10,12 @@ import Project from "@/components/Project";
 import iProject from "@/types/iProject"
 
 export default function Profile() {
-    const { project, addProject, searchProject, getSumCostComment } = useProject();
+    const { project, addProject, getProjects } = useProject();
     const [selectedProject, setSelectedProject] = useState<iProject | null>(null);
-    const { email } = useUser();
+    const { user } = useUser();
 
     useEffect(() => {
-        searchProject();
-        getSumCostComment();
+        getProjects();
     }, []);
 
     const openProject = (project: iProject) => {
@@ -37,7 +36,7 @@ export default function Profile() {
                         <button type="button" onClick={hAddProject} title="Cria Projeto" className="hover:text-blue-900 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">+ Projetos</button>
                     </div>
                     {project.map((project) => {
-                        return project.User?.email === email ? (
+                        return project.User?.id === (user?.id || -1) ? (
                             <Card key={project.id} project={project} onClick={() => openProject(project)} />
                         ) : null;
                     })}

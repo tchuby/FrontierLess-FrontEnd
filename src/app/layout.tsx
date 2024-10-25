@@ -1,7 +1,9 @@
 import './globals.css'
 import Nav from '@/components/Nav'
+
+//Contexts
 import ProjectProvider from "@/contexts/ProjectContext";
-import { UserProvider } from '@/contexts/userContext';
+import UserProvider from '@/contexts/UserContext';
 
 
 export const metadata = {

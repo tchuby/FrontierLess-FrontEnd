@@ -1,8 +1,11 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState } from 'react';
+import { getProjectsService, getProjectItemsService, getProjectReviewService } from "@/services/projectServices";
+import { useUser } from './UserContext';
+
 import iProject from "@/types/iProject";
-import { getProjects } from "@/services/projectServices";
+import { comment } from 'postcss';
 
 interface Props {
     children: React.ReactNode;
@@ -14,30 +17,26 @@ interface ProjectContextType {
     addProject: () => void;
     deleteProject: (id: number) => void;
     saveProject: (id: number, updatedProject: iProject) => void;
-    searchProject: () => void
-    getSumCostComment: () => void
+    getProjects: () => void
 }
 
 export const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
 
 export default function ProjectProvider({ children }: Props) {
     const [project, setProject] = useState<iProject[]>([]);
+    const { user } = useUser();
+    const randomInt = (max: number) => Math.floor(Math.random() * max + 10000);
 
-    const searchProject = async () => {
-        try {
-            const projects = await getProjects();
-            setProject(projects.projects);
-        } catch (error) {
-            console.error("Erro ao buscar projetos:", error);
-        }
-    };
-
-    const addProject = () => {
+    const addProject = async () => {
         const newProject: iProject = {
-            id: Date.now(),
+            id: randomInt(10000),
             destination: "",
-            status: "",
             tipo: "",
+            User: {
+                email: user?.email || "",
+                id: user?.id || -1,
+                name: user?.name || "",
+            },
             img: "/img/brasil.png",
         };
         setProject((prevProjects) => [...prevProjects, newProject]);
@@ -53,28 +52,23 @@ export default function ProjectProvider({ children }: Props) {
         );
     };
 
-    const sumCost = (cost: number, projectID: number, stepID: number) => {
+    const tCost = (projectID: number) => {
         setProject((prevProjects) => {
-            const uProjects = [...prevProjects];
-            const project = uProjects.find(p => p.id === projectID);
-
-            if (project && project.steps) {
-                const steps = project.steps;
-                let totalCost = 0;
-
-                steps.forEach(e => {
-                    if (e.id === stepID) {
-                        e.cost = cost;
-                    }
-                    totalCost += e.cost || 0;
-                });
-                project.totalCost = totalCost || 0;
-            }
-            return uProjects;
+            const updatedProjects = prevProjects.map((proj) => {
+                if (proj.id === projectID) {
+                    let totalCost = 0;
+                    proj.steps?.forEach(e => {
+                        totalCost = e.cost || 0 + totalCost
+                    })
+                    return { ...proj, totalCost: totalCost };
+                }
+                return proj;
+            });
+            return updatedProjects;
         });
     };
 
-    const sumComment = (quant: number, projectID: number) => {
+    const tComment = (quant: number, projectID: number) => {
         setProject((prevProjects) => {
             const updatedProjects = prevProjects.map((proj) => {
                 if (proj.id === projectID) {
@@ -86,19 +80,50 @@ export default function ProjectProvider({ children }: Props) {
         });
     };
 
-    const getSumCostComment = () => {
-        if (!project || project.length === 0) return;
-
-        project.forEach(proj => {
-            proj.steps?.forEach(step => {
-                sumCost(step.cost || 0, proj.id, step.id || -1);
-            });
-            sumComment(proj.comments?.length || 0, proj.id);
+    const getData = (projects: iProject[]) => {
+        if (!projects || projects.length === 0) return;
+        projects.forEach(proj => {
+            tCost(proj.id);
+            tComment(proj.comments?.length || 0, proj.id);
         });
     };
 
+    const getProjectData = async (projectID: number) => {
+        const steps = await getProjectItemsService(projectID)
+        //  const comments = await getProjectReviewService(projectID)
+        setProject((prevProjects) => {
+            const updatedProjects = prevProjects.map((proj) => {
+                if (proj.id === projectID) {
+                    return {
+                        ...proj,
+                        steps: steps,
+                        //comments: comments,
+                        quantSteps: steps.length
+                    };
+                }
+                return proj;
+            });
+            return updatedProjects;
+        });
+    }
+
+    const getProjects = async () => {
+        try {
+            const projects = await getProjectsService();
+
+            projects.projects.forEach((proj: iProject) => {
+                getProjectData(proj.id)
+            });
+
+            setProject(projects.projects);
+            getData(projects.projects)
+        } catch (error) {
+            console.error("Erro ao buscar projetos:", error);
+        }
+    };
+
     return (
-        <ProjectContext.Provider value={{ project, setProject, addProject, deleteProject, saveProject, searchProject, getSumCostComment }}>
+        <ProjectContext.Provider value={{ project, setProject, addProject, deleteProject, saveProject, getProjects }}>
             {children}
         </ProjectContext.Provider>
     );

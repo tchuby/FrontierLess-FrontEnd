@@ -1,20 +1,19 @@
 "use client";
 
 import { useProject } from "@/contexts/ProjectContext";
+import { useState, useEffect } from 'react';
 
-import React, { useState, useEffect } from 'react';
 import Card from "@/components/Card"
 import FormSearch from "@/components/FormSearch"
 import Project from "@/components/Project";
 import iProject from "@/types/iProject"
 
 export default function findProject() {
-    const { project, searchProject, getSumCostComment } = useProject();
+    const { project, getProjects } = useProject();
     const [selectedProject, setSelectedProject] = useState<iProject | null>(null);
 
     useEffect(() => {
-        searchProject();
-        getSumCostComment();
+        getProjects();
     }, []);
 
     const openProject = (project: iProject) => {

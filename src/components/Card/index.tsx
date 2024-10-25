@@ -25,14 +25,12 @@ export default function Card({ project, onClick }: Props) {
                 </div>
                 <div className='flex flex-col justify-center items-center'>
                     <P>
-                        <StarAvaliation disabled={true}/>
+                        <StarAvaliation disabled={true} />
                         {`${project.quantComments} Commentarios`}
                     </P>
-                    <P>
-                        {50}
-                    </P>
+                    <P> {`${project.quantSteps} Etapas`}</P>
                     <h4 className='font-bold tracking-tight text-gray-900 dark:text-white"'>
-                        {project.User.name}
+                        {project?.User?.name || ""}
                     </h4>
                 </div>
 
