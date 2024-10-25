@@ -5,7 +5,6 @@ import { getProjectsService, getProjectItemsService, getProjectReviewService } f
 import { useUser } from './UserContext';
 
 import iProject from "@/types/iProject";
-import { comment } from 'postcss';
 
 interface Props {
     children: React.ReactNode;
@@ -25,13 +24,13 @@ export const ProjectContext = createContext<ProjectContextType | undefined>(unde
 export default function ProjectProvider({ children }: Props) {
     const [project, setProject] = useState<iProject[]>([]);
     const { user } = useUser();
-    const randomInt = (max: number) => Math.floor(Math.random() * max + 10000);
 
+    let cont = 0;
     const addProject = async () => {
         const newProject: iProject = {
-            id: randomInt(10000),
+            id: 10000 + cont,
             destination: "",
-            tipo: "",
+            exchangeType: "",
             User: {
                 email: user?.email || "",
                 id: user?.id || -1,
@@ -40,31 +39,26 @@ export default function ProjectProvider({ children }: Props) {
             img: "/img/brasil.png",
         };
         setProject((prevProjects) => [...prevProjects, newProject]);
+        cont++;
+    };
+
+    const saveProject = (id: number, updatedProject: iProject) => {
+
     };
 
     const deleteProject = (id: number) => {
         setProject((prevProjects) => prevProjects.filter(project => project.id !== id));
     };
 
-    const saveProject = (id: number, updatedProject: iProject) => {
-        setProject((prevProjects) =>
-            prevProjects.map((project) => (project.id === id ? updatedProject : project))
-        );
-    };
-
-    const tCost = (projectID: number) => {
+    const tCost = async (projectID: number) => {
         setProject((prevProjects) => {
-            const updatedProjects = prevProjects.map((proj) => {
-                if (proj.id === projectID) {
-                    let totalCost = 0;
-                    proj.steps?.forEach(e => {
-                        totalCost = e.cost || 0 + totalCost
-                    })
-                    return { ...proj, totalCost: totalCost };
+            return prevProjects.map((proj) => {
+                if (proj.id === projectID && proj.steps) {
+                    const totalCost = proj.steps.reduce((acc, e) => acc + (e.cost || 0), 0);
+                    return { ...proj, totalCost };
                 }
                 return proj;
             });
-            return updatedProjects;
         });
     };
 
@@ -89,34 +83,31 @@ export default function ProjectProvider({ children }: Props) {
     };
 
     const getProjectData = async (projectID: number) => {
-        const steps = await getProjectItemsService(projectID)
-        //  const comments = await getProjectReviewService(projectID)
-        setProject((prevProjects) => {
-            const updatedProjects = prevProjects.map((proj) => {
+        const steps = await getProjectItemsService(projectID);
+
+        setProject(prevProjects => {
+            const updatedProjects = prevProjects.map(proj => {
                 if (proj.id === projectID) {
                     return {
                         ...proj,
                         steps: steps,
-                        //comments: comments,
-                        quantSteps: steps.length
+                        quantSteps: steps.length,
                     };
                 }
                 return proj;
             });
             return updatedProjects;
         });
-    }
+    };
+
 
     const getProjects = async () => {
         try {
             const projects = await getProjectsService();
-
-            projects.projects.forEach((proj: iProject) => {
-                getProjectData(proj.id)
-            });
-
             setProject(projects.projects);
-            getData(projects.projects)
+
+            await Promise.all(projects.projects.map((proj: iProject) => getProjectData(proj.id)));
+            getData(projects.projects);
         } catch (error) {
             console.error("Erro ao buscar projetos:", error);
         }

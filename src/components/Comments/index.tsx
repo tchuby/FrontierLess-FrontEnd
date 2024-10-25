@@ -21,27 +21,7 @@ export default function Comments({ project }: Props) {
         }
     }, [project.comments]);
 
-
-    /* useEffect(() => {
-         if (project && getQuantComment) {
-             getQuantComment(comments.length, project.id);
-         }
-     }, [comments.length, project?.id]);*/
-
-    const addComment = (event: React.FormEvent) => {
-        /* event.preventDefault();
- 
-         if (textAreaValue.trim() === "") return;
- 
-         const newComment: Comment = {
-             author: 'xxx',
-             comment: textAreaValue,
-             note: 5,
-             date: new Date()
-         };
- 
-         setComments([...comments, newComment]);
-         setTextAreaValue("");*/
+    const addComment = () => {
     };
 
     return (
@@ -51,21 +31,19 @@ export default function Comments({ project }: Props) {
                     <H2>Comentários</H2>
                 </div>
 
-                <form className="mb-6" onSubmit={addComment}>
-                    <div className="py-2 px-4 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
-                        <div className="mb-3">
-                            <StarAvaliation />
-                        </div>
-                        <TextArea
-                            id="comment"
-                            name="comment"
-                            value={textAreaValue}
-                            onChange={(e: any) => setTextAreaValue(e.target.value)}
-                            placeholder="Deixe seu comentário..."
-                        />
+                <div className="py-2 px-4 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+                    <div className="mb-3">
+                        <StarAvaliation />
                     </div>
-                    <Button type="submit">Postar comentário</Button>
-                </form>
+                    <TextArea
+                        id="comment"
+                        name="comment"
+                        value={textAreaValue}
+                        onChange={(e: any) => setTextAreaValue(e.target.value)}
+                        placeholder="Deixe seu comentário..."
+                    />
+                </div>
+                <Button type="button" onClick={() => addComment}>Postar comentário</Button>
 
                 <Comment comment={comments} />
             </div>

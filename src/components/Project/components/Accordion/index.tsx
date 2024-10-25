@@ -15,17 +15,9 @@ export default function Accordion({ step, index }: Props) {
     };
 
     const [localEtapa, setLocalEtapa] = useState(step);
-
-    const { getTotalCost } = useProject();
-
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setLocalEtapa({ ...localEtapa, [name]: value });
-
-        if (name === "cost") {
-            const uCost = parseFloat(value) || 0;
-            getTotalCost(uCost, index, step.id);
-        }
     };
 
     return (

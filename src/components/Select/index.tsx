@@ -6,14 +6,18 @@ interface Props {
     label: any,
     disabled?: boolean,
     children: React.ReactNode,
-    select?: any
+    select?: any,
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
-export default function Select({ id, name, label, children, disabled, select}: Props) {
-    
+export default function Select({ id, name, label, children, disabled, select, onChange }: Props) {
+
     const [selectedStatus, setSelectedStatus] = useState(select || '');
     const handleStatusChange = (e: any) => {
         setSelectedStatus(e.target.value);
+        if (onChange) {
+            onChange(e.value);
+        }
     };
 
     return (
