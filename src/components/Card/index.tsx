@@ -17,7 +17,7 @@ export default function Card({ project, onClick }: Props) {
             </div>
             <div className="flex justify-between p-4 w-full h-full">
                 <div className="leading-normal">
-                    <H2>{project.pais}</H2>
+                    <H2>{project.destination}</H2>
                     <P>Status: {project.status}</P>
                     <P>Tipo: {project.exchangeType}</P>
                     <P>Valor: {`R$${project.totalCost}`}</P>
@@ -32,7 +32,7 @@ export default function Card({ project, onClick }: Props) {
                         {50}
                     </P>
                     <h4 className='font-bold tracking-tight text-gray-900 dark:text-white"'>
-                        {project.author}
+                        {project.User.name}
                     </h4>
                 </div>
 

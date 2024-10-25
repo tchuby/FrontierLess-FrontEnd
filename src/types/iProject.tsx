@@ -1,10 +1,14 @@
 export default interface iProject {
     id: number;
-    pais: string;
+    destination: string;
     status: string;
     tipo: string;
-    img: string;
-    author: string;
+    User?: {
+        email: string
+        id: number
+        name: string
+    };
+    img?: string;
     steps?: [
         {
             id?: number;
