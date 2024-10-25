@@ -53,8 +53,6 @@ export default function Feed() {
       setNewComment(""); // Limpa o campo de entrada após o envio
     }
   };
-  // LEMBRAR DE FAZER A CONEXÃO COM O BANCO POR AQUI
-  const handleListarProjeto = ()
 
   return (
     <div className="container mx-auto p-6 flex">
