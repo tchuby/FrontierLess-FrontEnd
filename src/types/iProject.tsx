@@ -1,21 +1,16 @@
+import iStep from "./iStep";
+import iComment from "./iComment";
+import iUser from "./iUser";
+
 export default interface iProject {
     id: number;
-    pais: string;
-    status: string;
+    destination: string;
     tipo: string;
-    img: string;
-    author: string;
-    steps?: [
-        {
-            id?: number;
-            name?: string;
-            description?: string;
-            cost?: number;
-        }
-    ];
-    comments?: [{}];
-    totalCost?: number;
-    quantComments?: number;
+    status?: string;
+    User?: iUser;
+    img?: string;
+    steps?: [iStep];
+    comments?: [iComment];
     note?: number;
 
 }

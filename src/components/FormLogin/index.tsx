@@ -1,17 +1,39 @@
+import React, { useState } from "react";
+import { login } from "@/services/authServices"
+import { useUser } from "@/contexts/UserContext";
+
 import Button from "../Button";
 import Input from "../Input";
 import Link from "../Link";
 
-interface Props {
-    submit: (event: React.FormEvent<HTMLFormElement>) => void;
-}
+export default function FormLogin() {
+    const { setUser } = useUser();
 
-export default function FormLogin({ submit }: Props) {
+    const [formData, setFormData] = useState({
+        email: "",
+        password: ""
+    });
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handlelogin = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+            const data = await login(formData);
+            setUser(data.user);
+            console.log(">>>:", data.message);
+        } catch (error) {
+            console.error(">>>:", error);
+        }
+    };
+
     return (
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-            <form className="space-y-6" onSubmit={submit}>
-                <Input id="email" name="email" type="email">Email</Input>
-                <Input id="password" name="password" type="password">Senha</Input>
+            <form className="space-y-6" onSubmit={handlelogin}>
+                <Input id="email" name="email" type="email" onChange={handleChange}>Email</Input>
+                <Input id="password" name="password" type="password" onChange={handleChange}>Senha</Input>
                 <Button type="submit">Entrar</Button>
             </form>
 

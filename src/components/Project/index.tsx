@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import Select from '../Select';
 import Accordion from "./components/Accordion";
@@ -30,23 +30,26 @@ export default function Project({ project, findProject }: Props) {
         description: ""
     };
 
+    const addStep = () => {
+        setSteps([...steps, newStep]);
+    };
+
+
+
     useEffect(() => {
         if (project.steps) {
             setSteps(project.steps);
         }
     }, [project.steps]);
 
-    const addStep = () => {
-        setSteps([...steps, newStep]);
-    };
 
     return (
         <form>
             <div className="border-b border-gray-900/10 pb-12">
                 <div className="flex justify-between">
-                    <input type="text" name="destination" value={project.pais} hidden />
-                    <H2>{project.pais}</H2>
-                    <H2>{project.author}</H2>
+                    <input type="text" name="destination" value={project.destination} hidden />
+                    <H2>{project.destination}</H2>
+                    <H2>{project.User.name}</H2>
                 </div>
 
                 <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -56,7 +59,7 @@ export default function Project({ project, findProject }: Props) {
                         label="Status"
                         disabled={findProject}
                         select={project.status}>
-                        <option value="andamento">Andamento</option>
+                        <option value="progredindo">Progredindo</option>
                         <option value="hiato">Hiato</option>
                         <option value="finalizado">Finalizado</option>
                         <option value="abandonado">Abandonado</option>
@@ -73,7 +76,6 @@ export default function Project({ project, findProject }: Props) {
                         <option value="faculdade">Faculdade</option>
                         <option value="pós-graduação">Pós-graduação</option>
                         <option value="pesquisa">Pesquisa</option>
-                        <option value="turismo">Turismo</option>
                     </Select>
                     <div>
                         <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Custo total</label>
@@ -87,7 +89,7 @@ export default function Project({ project, findProject }: Props) {
                     <button disabled={findProject} type="button" onClick={addStep} title="Adicionar Etapa" className="mt-5 text-2xl font-bold tracking-tight text-gray-900 dark:text-white hover:text-blue-900">+ Etapas</button>
                 </div>
                 {steps.map((step, i) => (
-                    <Accordion key={project.id} step={step} index={project.id}/>
+                    <Accordion key={project.id} step={step} index={project.id} />
                 ))}
             </div>
 
