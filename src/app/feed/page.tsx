@@ -34,14 +34,14 @@ const initialItems: Project[] = [
 ];
 
 export default function Feed() {
-  const [selectedProject, setSelectedProject] = useState<Item | null>(null);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [comments, setComments] = useState<string[]>([]);
   const [newComment, setNewComment] = useState("");
 
   // Simula pegar os projetos do Profile
   const [projectsFromProfile, setProjectsFromProfile] = useState(initialItems); // Aqui você pode pegar os projetos reais do Profile
 
-  const handleProjectClick = (project: Item) => {
+  const handleProjectClick = (project: Project) => {
     setSelectedProject(project);
     setComments([]); // Limpa os comentários ao selecionar um novo projeto
   };
@@ -53,6 +53,8 @@ export default function Feed() {
       setNewComment(""); // Limpa o campo de entrada após o envio
     }
   };
+  // LEMBRAR DE FAZER A CONEXÃO COM O BANCO POR AQUI
+  const handleListarProjeto = ()
 
   return (
     <div className="container mx-auto p-6 flex">
@@ -67,26 +69,32 @@ export default function Feed() {
               className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer"
               onClick={() => handleProjectClick(item)}
             >
-              <img src={item.img} alt={item.title} className="w-full h-48 object-cover" />
+              <img src={item.img} alt={item.tipo} className="w-full h-48 object-cover" />
               <div className="p-4">
-                <h2 className="text-xl font-semibold">{item.title}</h2>
-                <p className="text-gray-600">{item.description}</p>
+                <h2 className="text-xl font-semibold">{item.tipo}</h2>
+                <p className="text-gray-600">{item.status}</p>
               </div>
             </div>
           ))}
         </div>
       </div>
 
-      <div className="w-1/3 pl-6">
+      <div
+        className={`transition-all duration-500 ${
+          selectedProject ? "w-2/3" : "w-1/3"
+        } pl-6`}
+      >
         {selectedProject ? (
           <div className="bg-white rounded-lg shadow-md p-4">
-            <h2 className="text-xl font-semibold mb-4">{selectedProject.title}</h2>
+            <h2 className="text-xl font-semibold mb-4">{selectedProject.tipo}</h2>
             <div className="mb-4">
               <h3 className="font-semibold">Comentários:</h3>
               <div className="space-y-2">
                 {comments.length > 0 ? (
                   comments.map((comment, index) => (
-                    <p key={index} className="text-gray-700">{comment}</p>
+                    <p key={index} className="text-gray-700">
+                      {comment}
+                    </p>
                   ))
                 ) : (
                   <p className="text-gray-500">Nenhum comentário ainda.</p>
@@ -101,7 +109,10 @@ export default function Feed() {
                 className="border rounded-lg p-2 flex-grow mr-2"
                 placeholder="Adicione um comentário..."
               />
-              <button type="submit" className="bg-blue-500 text-white font-semibold rounded-lg px-4 hover:bg-blue-600">
+              <button
+                type="submit"
+                className="bg-blue-500 text-white font-semibold rounded-lg px-4 hover:bg-blue-600"
+              >
                 Comentar
               </button>
             </form>
@@ -111,12 +122,6 @@ export default function Feed() {
             <p className="text-gray-500">Selecione um projeto para ver os comentários.</p>
           </div>
         )}
-      </div>
-
-      <div className="mt-6 text-center w-full">
-        <Link href="/" className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600">
-          Ir para Home
-        </Link>
       </div>
     </div>
   );

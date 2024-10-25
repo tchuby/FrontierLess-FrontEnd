@@ -47,7 +47,7 @@ export default function Home() {
         {/* Parte Direita - Imagem */}
         <div className="lg:w-1/2 flex justify-center">
           <img
-            src="/img/osaka.jpg/"
+            src="/img/osaka.png/"
             alt="FrontierLess"
             className="h-full w-auto object-contain rounded-lg shadow-lg"
           />
@@ -59,7 +59,7 @@ export default function Home() {
         {/* Parte Esquerda - Nova Imagem */}
         <div className="lg:w-1/2 flex justify-center">
           <img
-            src="/img/imagem-roma.jpg/" // Substitua pelo caminho da nova imagem
+            src="/img/roma.png/" // Substitua pelo caminho da nova imagem
             alt="Nova Imagem"
             className="h-full w-auto object-contain rounded-lg shadow-lg"
           />
