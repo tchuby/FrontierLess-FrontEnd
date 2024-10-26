@@ -3,12 +3,16 @@ import iComment from "./iComment";
 import iUser from "./iUser";
 
 export default interface iProject {
-    id: number;
+    id?: number;
     destination: string;
-    exchangeType: string;
     status?: string;
+    exchangeType: string;
+    createdAt?: Date,
+    updatedAt?: Date,
+    budget?: number;
     User?: iUser;
+    steps?: iStep[];
+    comments?: iComment[];
     img?: string;
-    steps?: [iStep];
-    comments?: [iComment];
+
 }

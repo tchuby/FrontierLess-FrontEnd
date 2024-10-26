@@ -23,7 +23,16 @@ export default function Profile() {
     };
 
     const hAddProject = () => {
-        addProject();
+        const newProject: iProject = {
+            destination: "",
+            exchangeType: "",
+            User: {
+                id: user?.id || -1,
+                email: user?.email || "",
+                name: user?.name || "",
+            }
+        }
+        addProject(newProject);
     };
 
     return (
@@ -35,16 +44,21 @@ export default function Profile() {
                     <div className="w-full text-center mb-4">
                         <button type="button" onClick={hAddProject} title="Cria Projeto" className="hover:text-blue-900 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">+ Projetos</button>
                     </div>
-                    {project.map((project) => {
-                        return project.User?.id === (user?.id || -1) ? (
-                            <Card key={project.id} project={project} onClick={() => openProject(project)} />
-                        ) : null;
-                    })}
+                    {Array.isArray(project) && project.length > 0 ? (
+                        project.map((proj) => {
+                            return proj.User?.id === (user?.id || -1) ? (
+                                <Card key={proj.id} project={proj} onClick={() => openProject(proj)} />
+                            ) : null;
+                        })
+                    ) : (
+                        <div className="text-gray-500">Nenhum projeto Encontrado</div> // Mensagem opcional
+                    )}
+
                 </section>
 
                 <section className="w-full p-4 min-h-screen shadow-lg" id="projectContainer">
                     {selectedProject && (
-                        <Project key={selectedProject.id} project={selectedProject} />
+                        <Project key={selectedProject.id} selectedProject={selectedProject} setSelectedProject={setSelectedProject} />
                     )}
                 </section>
 

@@ -16,7 +16,7 @@ export default function Select({ id, name, label, children, disabled, select, on
     const handleStatusChange = (e: any) => {
         setSelectedStatus(e.target.value);
         if (onChange) {
-            onChange(e.value);
+            onChange(e);
         }
     };
 

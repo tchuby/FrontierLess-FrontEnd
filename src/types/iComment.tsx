@@ -4,5 +4,6 @@ export default interface iComment {
     description?: string,
     createdAt?: Date,
     updatedAt?: Date,
-    UserId?: number
+    UserId?: number,
+    ProjectId?: number
 }

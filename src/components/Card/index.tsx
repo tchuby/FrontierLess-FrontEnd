@@ -20,12 +20,12 @@ export default function Card({ project, onClick }: Props) {
                     <H2>{project.destination}</H2>
                     <P>Status: {project.status}</P>
                     <P>Tipo: {project.exchangeType}</P>
-                    <P>Valor: {`R$${project.totalCost}`}</P>
+                    <P>Valor: {`R$ ${(project.budget || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</P>
 
                 </div>
                 <div className='flex flex-col justify-center items-center'>
                     <P>
-                        <StarAvaliation disabled={true} />
+                        <StarAvaliation disabled={true} grade={project.averageGrade}/>
                         {`${project.quantComments} Commentarios`}
                     </P>
                     <P> {`${project.quantSteps} Etapas`}</P>
