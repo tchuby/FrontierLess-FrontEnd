@@ -67,7 +67,7 @@ export default function Comments({ selectedProject, setSelectedProject }: Props)
 
             <div className="py-2 px-4 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
                 <div className="mb-3">
-                    <StarAvaliation onGradeSelect={setSelectedGrade} />
+                    <StarAvaliation onChange={setSelectedGrade} />
                 </div>
                 <TextArea
                     id="comment"
@@ -83,7 +83,7 @@ export default function Comments({ selectedProject, setSelectedProject }: Props)
             {Array.isArray(selectedProject.comments) && selectedProject.comments.length > 0 ? (
                 selectedProject.comments.map((cmt, index) => {
                     return (
-                        <Comment key={index} comment={cmt} />
+                        <Comment key={index} comment={cmt} projectID={selectedProject.id}/>
                     );
                 })) :
                 (
