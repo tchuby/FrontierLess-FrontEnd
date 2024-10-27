@@ -1,11 +1,10 @@
 "use client";
 
 import { createContext, useContext, useState } from 'react';
-import { getProjectsService, getProjectItemsService, getProjectReviewService } from "@/services/projectServices";
+import { getAllProjectsService, getItemsService, addProjectService, getReviewService } from "@/services/projectServices";
 import { useUser } from './UserContext';
 
 import iProject from "@/types/iProject";
-import { comment } from 'postcss';
 
 interface Props {
     children: React.ReactNode;
@@ -14,7 +13,7 @@ interface Props {
 interface ProjectContextType {
     project: iProject[];
     setProject: (projects: iProject[]) => void;
-    addProject: () => void;
+    addProject: (newProject: iProject) => void;
     deleteProject: (id: number) => void;
     saveProject: (id: number, updatedProject: iProject) => void;
     getProjects: () => void
@@ -25,98 +24,63 @@ export const ProjectContext = createContext<ProjectContextType | undefined>(unde
 export default function ProjectProvider({ children }: Props) {
     const [project, setProject] = useState<iProject[]>([]);
     const { user } = useUser();
-    const randomInt = (max: number) => Math.floor(Math.random() * max + 10000);
 
-    const addProject = async () => {
-        const newProject: iProject = {
-            id: randomInt(10000),
-            destination: "",
-            tipo: "",
-            User: {
-                email: user?.email || "",
-                id: user?.id || -1,
-                name: user?.name || "",
-            },
-            img: "/img/brasil.png",
-        };
-        setProject((prevProjects) => [...prevProjects, newProject]);
+    const addProject = async (newProject: iProject) => {
+        if (newProject.destination === "" && newProject.exchangeType === "") {
+            setProject((prevProjects) => [...prevProjects, newProject]);
+        }
+        if (newProject.destination !== "" && newProject.exchangeType !== "") {
+            const data = await addProjectService(newProject);
+        }
+    }
+
+    const saveProject = (id: number, updatedProject: iProject) => {
     };
 
     const deleteProject = (id: number) => {
-        setProject((prevProjects) => prevProjects.filter(project => project.id !== id));
-    };
-
-    const saveProject = (id: number, updatedProject: iProject) => {
-        setProject((prevProjects) =>
-            prevProjects.map((project) => (project.id === id ? updatedProject : project))
-        );
-    };
-
-    const tCost = (projectID: number) => {
-        setProject((prevProjects) => {
-            const updatedProjects = prevProjects.map((proj) => {
-                if (proj.id === projectID) {
-                    let totalCost = 0;
-                    proj.steps?.forEach(e => {
-                        totalCost = e.cost || 0 + totalCost
-                    })
-                    return { ...proj, totalCost: totalCost };
-                }
-                return proj;
-            });
-            return updatedProjects;
-        });
-    };
-
-    const tComment = (quant: number, projectID: number) => {
-        setProject((prevProjects) => {
-            const updatedProjects = prevProjects.map((proj) => {
-                if (proj.id === projectID) {
-                    return { ...proj, quantComments: quant };
-                }
-                return proj;
-            });
-            return updatedProjects;
-        });
-    };
-
-    const getData = (projects: iProject[]) => {
-        if (!projects || projects.length === 0) return;
-        projects.forEach(proj => {
-            tCost(proj.id);
-            tComment(proj.comments?.length || 0, proj.id);
-        });
     };
 
     const getProjectData = async (projectID: number) => {
-        const steps = await getProjectItemsService(projectID)
-        //  const comments = await getProjectReviewService(projectID)
-        setProject((prevProjects) => {
-            const updatedProjects = prevProjects.map((proj) => {
+        let steps = [];
+        let comments = [];
+        let quantComments = 0;
+        let averageGrade = 0;
+        try {
+            steps = await getItemsService(projectID);
+            comments = await getReviewService(projectID);
+            quantComments = comments.length;
+
+            if (quantComments > 0) {
+                const totalGrades = comments.reduce((acc: any, comment: any) => acc + comment.grade, 0);
+                averageGrade = totalGrades / quantComments;
+            }
+        } catch (error) {
+            console.error(`Erro ao buscar dados do projeto ${projectID}:`, error);
+        }
+        setProject(prevProjects => {
+            const updatedProjects = prevProjects.map(proj => {
                 if (proj.id === projectID) {
                     return {
                         ...proj,
-                        steps: steps,
-                        //comments: comments,
-                        quantSteps: steps.length
+                        steps: steps || [],
+                        quantSteps: steps.length,
+                        comments: comments || [],
+                        quantComments: comments.length,
+                        averageGrade: averageGrade
                     };
                 }
                 return proj;
             });
             return updatedProjects;
         });
-    }
+    };
+
 
     const getProjects = async () => {
         try {
-            const projects = await getProjectsService();
-
-            projects.projects.forEach((proj: iProject) => {
-                getProjectData(proj.id)
-            });
-
+            const projects = await getAllProjectsService();
             setProject(projects.projects);
-            getData(projects.projects)
+            await Promise.all(projects.projects.map((proj: iProject) => getProjectData(proj.id || -1)));
         } catch (error) {
             console.error("Erro ao buscar projetos:", error);
         }

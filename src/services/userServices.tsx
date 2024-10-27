@@ -10,3 +10,14 @@ export const createUser = async (formData: any) => {
         throw error;
     }
 };
+
+export const getUserById = async (UserId: number) => {
+    try {
+        const response = await axios.get(`${API_URL}/${UserId}`, {
+            withCredentials: true
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};

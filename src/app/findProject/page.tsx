@@ -35,7 +35,7 @@ export default function findProject() {
 
                 <section className="w-full min-h-screen shadow-lg p-4" id="projectContainer">
                     {selectedProject && (
-                        <Project key={selectedProject.id} project={selectedProject} findProject={findProject} />
+                        <Project key={selectedProject.id} selectedProject={selectedProject} setSelectedProject={setSelectedProject} findProject={findProject} />
                     )}
                 </section>
             </div>

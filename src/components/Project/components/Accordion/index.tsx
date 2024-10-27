@@ -5,27 +5,19 @@ import iStep from "@/types/iStep"
 
 interface Props {
     step: iStep;
-    index: number
+    findProject: any
 }
 
-export default function Accordion({ step, index }: Props) {
+export default function Accordion({ step, findProject }: Props) {
     const [isOpen, setIsOpen] = useState(false);
     const toggleAccordion = () => {
         setIsOpen(!isOpen);
     };
 
     const [localEtapa, setLocalEtapa] = useState(step);
-
-    const { getTotalCost } = useProject();
-
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setLocalEtapa({ ...localEtapa, [name]: value });
-
-        if (name === "cost") {
-            const uCost = parseFloat(value) || 0;
-            getTotalCost(uCost, index, step.id);
-        }
     };
 
     return (
@@ -39,7 +31,8 @@ export default function Accordion({ step, index }: Props) {
                         name="name"
                         value={localEtapa.name}
                         onChange={handleInputChange}
-                        className="w-full font-bold" />
+                        className="w-full font-bold"
+                        disabled={findProject} />
                 </span>
                 <span id="icon-1" className={`text-slate-800 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4">
@@ -57,6 +50,7 @@ export default function Accordion({ step, index }: Props) {
                         value={localEtapa.cost}
                         onChange={handleInputChange}
                         className="border-b text-black"
+                        disabled={findProject}
                     />
                     <div>
                         <label htmlFor="description" className="block text-sm font-medium leading-6 text-gray-900">Descriçao</label>
@@ -67,6 +61,7 @@ export default function Accordion({ step, index }: Props) {
                             onChange={handleInputChange}
                             rows={4}
                             className="border w-full p-1 rounded text-black"
+                            disabled={findProject}
                         />
                     </div>
                     <button type="button" className="text-red-700 font-bold mt-3 w-full text-right hover:text-red-800 transition-colors">Deletar Etapa</button>
