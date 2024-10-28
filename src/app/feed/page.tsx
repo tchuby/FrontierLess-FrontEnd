@@ -16,19 +16,19 @@ type Project = {
 const initialItems: Project[] = [
   {
     key: 1,
-    pais: "",
-    status: "",
-    tipo: "",
+    pais: "Austrália",
+    status: "Em progresso",
+    tipo: "Residencial",
     img: "/img/australia.png",
-    autor: "",
+    autor: "Autor A",
   },
   {
     key: 2,
-    pais: "",
-    status: "",
-    tipo: "",
-    img: "/img/australia.png",
-    autor: "",
+    pais: "Itália",
+    status: "Concluído",
+    tipo: "Comercial",
+    img: "/img/imagem-roma.jpg",
+    autor: "Autor B",
   },
   // Adicione mais itens conforme necessário
 ];
@@ -78,13 +78,22 @@ export default function Feed() {
       </div>
 
       <div
-        className={`transition-all duration-500 ${
-          selectedProject ? "w-2/3" : "w-1/3"
-        } pl-6`}
+        className={`transition-all duration-500 ${selectedProject ? "w-2/3" : "w-1/3"} pl-6`}
       >
         {selectedProject ? (
           <div className="bg-white rounded-lg shadow-md p-4">
             <h2 className="text-xl font-semibold mb-4">{selectedProject.tipo}</h2>
+            
+            {/* Detalhes do Projeto Selecionado */}
+            <div className="mb-4">
+              <h3 className="font-semibold">Detalhes do Projeto:</h3>
+              <p><strong>País:</strong> {selectedProject.pais}</p>
+              <p><strong>Status:</strong> {selectedProject.status}</p>
+              <p><strong>Tipo:</strong> {selectedProject.tipo}</p>
+              <p><strong>Autor:</strong> {selectedProject.autor}</p>
+            </div>
+            
+            {/* Comentários */}
             <div className="mb-4">
               <h3 className="font-semibold">Comentários:</h3>
               <div className="space-y-2">
