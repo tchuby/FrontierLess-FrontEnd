@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useProject } from '@/contexts/ProjectContext';
 
+//Components
 import Select from '../Select';
 import Accordion from "./components/Accordion";
 import H2 from '../H2';
@@ -22,7 +23,7 @@ interface Props {
 
 export default function Project({ selectedProject, findProject, setSelectedProject }: Props) {
     const [steps, setSteps] = useState<iStep[]>([]);
-    const { project, setProject, addProject, saveProject } = useProject();
+    const { project, setProject, addProject, updateProject } = useProject();
 
     const newStep: iStep = {
         id: 0,
@@ -44,8 +45,16 @@ export default function Project({ selectedProject, findProject, setSelectedProje
         e.preventDefault();
         try {
             if (selectedProject.id && selectedProject.id !== 0) {
-                await saveProject(selectedProject.id, selectedProject);
+                await updateProject(selectedProject.id, selectedProject);
             } else {
+                if (selectedProject.destination === "") {
+                    alert("Favor insira um destino");
+                    return;
+                }
+                if (selectedProject.exchangeType === "") {
+                    alert("Favor insira um tipo de intercâmbio");
+                    return;
+                }
                 await addProject(selectedProject);
             }
         } catch (error) {
@@ -96,6 +105,7 @@ export default function Project({ selectedProject, findProject, setSelectedProje
                             disabled={findProject}
                             select={selectedProject.exchangeType}
                             onChange={handleChange}>
+                            <option value=""></option>
                             <option value="idioma">Idioma</option>
                             <option value="escola">Escola</option>
                             <option value="faculdade">Faculdade</option>
@@ -105,7 +115,7 @@ export default function Project({ selectedProject, findProject, setSelectedProje
                         <div>
                             <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Custo total</label>
                             <h2 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                {`R$ ${(selectedProject.budget ?? 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`}
+                                {Number(selectedProject.budget ?? 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                             </h2>
                         </div>
                     </div>

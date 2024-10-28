@@ -1,13 +1,19 @@
+import { useState, useEffect } from 'react';
+//Components
 import StarAvaliation from "@/components/StarAvaliation";
 import CommentSettings from "../CommentSettings";
+//Services
 import { getUserById } from "@/services/userServices";
-import { updateReviewService, deleteReviewService } from "@/services/projectServices";
-import { useState, useEffect } from 'react';
+//Contexts
+import { useProject } from '@/contexts/ProjectContext';
+//Types
 import iUser from "@/types/iUser";
+import iProject from '@/types/iProject';
 
 interface Props {
     comment: any;
     projectID: any;
+
 }
 
 export default function Comment({ comment, projectID }: Props) {
@@ -15,6 +21,9 @@ export default function Comment({ comment, projectID }: Props) {
     const [isEditing, setIsEditing] = useState(false);
     const [editedComment, setEditedComment] = useState(comment.description);
     const [editedGrade, setEditedGrade] = useState(comment.grade);
+
+    const { deleteComment, updateComment } = useProject();
+
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -33,31 +42,17 @@ export default function Comment({ comment, projectID }: Props) {
         setIsEditing(true);
     };
 
-    const handleSave = async () => {
-        const eComment = {
+    const handleUpdate = async (commentID: number) => {
+        const nComment = {
             description: editedComment,
             grade: editedGrade
-        }
-        try {
-            const data = await updateReviewService(eComment, comment.id);
-            setUser(data);
-        } catch (error) {
-            console.error(error);
-        }
+        };
+        await updateComment(nComment, commentID, projectID);
         setIsEditing(false);
     };
 
     const handleDelete = async () => {
-        const eComment = {
-            description: editedComment,
-            grade: editedGrade
-        }
-        try {
-            const data = await deleteReviewService(projectID, comment.id);
-            setUser(data);
-        } catch (error) {
-            console.error(error);
-        }
+        await deleteComment(projectID, comment.id)
         setIsEditing(false);
     };
 
@@ -88,7 +83,7 @@ export default function Comment({ comment, projectID }: Props) {
                             className="w-full p-2 border border-gray-300 rounded dark:bg-gray-800 dark:text-white"
                         />
                         <button
-                            onClick={handleSave}
+                            onClick={() => handleUpdate(comment.id)}
                             className="text-sm bg-emerald-500 hover:bg-emerald-700 text-white font-bold py-1 px-2 rounded mt-2">
                             Salvar
                         </button>

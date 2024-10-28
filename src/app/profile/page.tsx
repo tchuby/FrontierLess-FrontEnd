@@ -45,14 +45,15 @@ export default function Profile() {
                         <button type="button" onClick={hAddProject} title="Cria Projeto" className="hover:text-blue-900 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">+ Projetos</button>
                     </div>
                     {Array.isArray(project) && project.length > 0 ? (
-                        project.map((proj) => {
-                            return proj.User?.id === (user?.id || -1) ? (
-                                <Card key={proj.id} project={proj} onClick={() => openProject(proj)} />
-                            ) : null;
-                        })
-                    ) : (
-                        <div className="text-gray-500">Nenhum projeto Encontrado</div> // Mensagem opcional
-                    )}
+                        project.some((proj) => proj.User?.id === (user?.id || -1)) ? (
+                            project.map((proj) => {
+                                return proj.User?.id === (user?.id || -1) ? (
+                                    <Card key={proj.id} project={proj} onClick={() => openProject(proj)} />
+                                ) : null;
+                            })
+                        ) : (
+                            <div className="text-gray-500">Nenhum projeto Encontrado</div>
+                        )) : null}
 
                 </section>
 

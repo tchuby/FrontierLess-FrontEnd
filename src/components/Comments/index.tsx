@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 //contexts
 import { useProject } from "@/contexts/ProjectContext";
 import { useUser } from '@/contexts/UserContext';
@@ -11,9 +11,6 @@ import Comment from "./components/Comment";
 //Types
 import iProject from '@/types/iProject';
 import iComment from '@/types/iComment';
-//Services
-import { addReviewService } from '@/services/projectServices';
-
 
 interface Props {
     selectedProject: iProject;
@@ -22,12 +19,12 @@ interface Props {
 }
 
 export default function Comments({ selectedProject, setSelectedProject }: Props) {
-    const { project, setProject } = useProject();
+    const { addComment } = useProject();
     const { user } = useUser();
     const [textAreaValue, setTextAreaValue] = useState("");
     const [selectedGrade, setSelectedGrade] = useState<number | null>(null);
 
-    const addComment = () => {
+    const haddComment = () => {
         if (!textAreaValue.trim()) return;
 
         const newComment: iComment = {
@@ -37,23 +34,11 @@ export default function Comments({ selectedProject, setSelectedProject }: Props)
             ProjectId: selectedProject.id || -1
         }
 
-        const updatedProjects: iProject[] = project.map((proj) => {
-            if (proj.id === selectedProject.id) { return { ...proj, comments: [...(proj.comments || []), newComment] }; }
-            return proj;
-        });
-        setProject(updatedProjects);
-
         setSelectedProject((prevSelected) => {
             if (prevSelected) { return { ...prevSelected, comments: [...(prevSelected.comments || []), newComment] } }
             return null;
         });
-
-        try {
-            const data = addReviewService(newComment)
-            console.log(data)
-        } catch (error) {
-            console.log(error)
-        }
+        addComment(newComment)
 
         setTextAreaValue("");
         setSelectedGrade(0)
@@ -77,13 +62,13 @@ export default function Comments({ selectedProject, setSelectedProject }: Props)
                     placeholder="Deixe seu comentário..."
                 />
             </div>
-            <Button type="button" onClick={addComment}>Postar comentário</Button>
+            <Button type="button" onClick={haddComment}>Postar comentário</Button>
 
 
             {Array.isArray(selectedProject.comments) && selectedProject.comments.length > 0 ? (
                 selectedProject.comments.map((cmt, index) => {
                     return (
-                        <Comment key={index} comment={cmt} projectID={selectedProject.id}/>
+                        <Comment key={index} comment={cmt} projectID={selectedProject.id} />
                     );
                 })) :
                 (

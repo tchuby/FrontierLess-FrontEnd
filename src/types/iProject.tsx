@@ -14,5 +14,8 @@ export default interface iProject {
     steps?: iStep[];
     comments?: iComment[];
     img?: string;
+    averageGrade?: number;
+    quantComments?: number;
+    quantSteps?: number;
 
 }
