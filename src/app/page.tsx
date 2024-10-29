@@ -84,6 +84,5 @@ export default function Home() {
       <footer className="bg-gray-100 text-center p-4">
         <p className="text-gray-600">© 2024 FrontierLess. Todos os direitos reservados.</p>
       </footer>
-    </div>
   );
 }

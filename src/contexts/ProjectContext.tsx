@@ -1,7 +1,10 @@
 "use client";
 
 import { createContext, useContext, useState } from 'react';
-import iProject from "@/types/iProject"
+//Services
+import { addProjectService, deleteProjectService, updateProjectService, getAllProjectsService } from "@/services/projectServices";
+//Types
+import iProject from "@/types/iProject";
 
 interface Props {
     children: React.ReactNode;
@@ -10,75 +13,63 @@ interface Props {
 interface ProjectContextType {
     project: iProject[];
     setProject: (projects: iProject[]) => void;
-    addProject: () => void;
+    addProject: (newProject: iProject) => void;
     deleteProject: (id: number) => void;
-    saveProject: (id: number, updatedProject: iProject) => void;
-    getTotalCost: (cost: number, projectID: number, stepID: number) => void;
-    getQuantComment: (quant: number, projectID: number) => void;
+    updateProject: (projectID: number, projectUpdate: iProject) => void;
+    getProjects: () => Promise<iProject[]>
 }
 
 export const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
 
 export default function ProjectProvider({ children }: Props) {
     const [project, setProject] = useState<iProject[]>([]);
+    const addProject = async (newProject: iProject) => {
+        try {
+            if (newProject.destination === "" && newProject.exchangeType === "") {
+                setProject((prevProjects) => [...prevProjects, newProject]);
+                return;
+            }
+            const data = await addProjectService(newProject);
+            console.log(data.message)
 
-    const addProject = () => {
-        const newProject: iProject = {
-            id: Date.now(),
-            pais: "",
-            status: "",
-            tipo: "",
-            img: "/img/brasil.png",
-            author: "",
-        };
-        setProject((prevProjects) => [...prevProjects, newProject]);
+        } catch (error) {
+            console.log(error)
+        }
     }
 
-    const deleteProject = (id: number) => {
-        setProject((prevProjects) => prevProjects.filter(project => project.id !== id));
+    const updateProject = async (projectID: number, updatedProject: iProject) => {
+        try {
+            const data = await updateProjectService(projectID, updatedProject);
+            console.log(data.message)
+
+        } catch (error) {
+            console.log(error)
+        }
     };
 
-    const saveProject = (id: number, updatedProject: iProject) => {
-        setProject((prevProjects) =>
-            prevProjects.map((project) => (project.id === id ? updatedProject : project))
-        );
+    const deleteProject = async (projectId: number) => {
+        const data = await deleteProjectService(projectId);
+        if (data) {
+            setProject((prevProjects: iProject[]) => prevProjects.filter(proj => proj.id !== projectId));
+        }
     };
 
-    const getTotalCost = (cost: number, projectID: number, stepID: number) => {
-        setProject((prevProjects) => {
-            const uProjects = [...prevProjects];
-            const project = uProjects.find(p => p.id === projectID);
-
-            if (project && project.steps) {
-                const steps = project.steps;
-                let totalCost = 0;
-
-                steps.forEach(e => {
-                    if (e.id === stepID) {
-                        e.cost = cost;
-                    }
-                    totalCost += e.cost || 0;
-                });
-                project.totalCost = totalCost || 0
-            }
-            return uProjects;
-        });
-    };
-
-    const getQuantComment = (quant: number, projectID: number) => {
-        setProject((prevProjects) => {
-            const updatedProjects = prevProjects.map((proj) => {
-                if (proj.id === projectID) {
-                    return { ...proj, quantComments: quant };
-                }
-                return proj;
-            });
-            return updatedProjects;
-        });
+    const getProjects = async () => {
+        const projects = await getAllProjectsService();
+        setProject(projects.projects)
+        return projects.projects
     };
 
     return (
-        <ProjectContext.Provider value={{ project, setProject, addProject, deleteProject, saveProject, getTotalCost, getQuantComment }}>
+        <ProjectContext.Provider
+            value={{
+                project,
+                setProject,
+                addProject,
+                deleteProject,
+                updateProject,
+                getProjects
+            }}>
             {children}
         </ProjectContext.Provider>
     );

@@ -1,7 +1,11 @@
 import './globals.css'
 import Nav from '@/components/Nav'
-import ProjectProvider from "@/contexts/ProjectContext";
 
+//Contexts
+import ProjectProvider from "@/contexts/ProjectContext";
+import StepProvider from '@/contexts/StepContext';
+import CommentProvider from '@/contexts/CommentContext';
+import UserProvider from '@/contexts/UserContext';
 
 
 export const metadata = {
@@ -13,10 +17,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
-        <ProjectProvider>
-          <Nav />
-          {children}
-        </ProjectProvider>
+        <UserProvider>
+          <ProjectProvider>
+            <StepProvider>
+              <CommentProvider>
+                <Nav />
+                {children}
+              </CommentProvider>
+            </StepProvider>
+          </ProjectProvider>
+        </UserProvider>
+
       </body>
     </html>
   )

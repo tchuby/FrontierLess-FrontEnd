@@ -9,7 +9,7 @@ export default function Image({ src }: Props) {
         <div className="relative w-full h-full">
             <ImageNext
                 className="object-cover rounded-t-lg md:rounded-none md:rounded-s-lg"
-                src={src}
+                src="/img/brasil.png"
                 alt=""
                 layout="fill"
             />

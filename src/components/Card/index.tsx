@@ -17,22 +17,19 @@ export default function Card({ project, onClick }: Props) {
             </div>
             <div className="flex justify-between p-4 w-full h-full">
                 <div className="leading-normal">
-                    <H2>{project.pais}</H2>
+                    <H2>{project.destination}</H2>
                     <P>Status: {project.status}</P>
                     <P>Tipo: {project.exchangeType}</P>
-                    <P>Valor: {`R$${project.totalCost}`}</P>
-
+                    <P>Valor:{Number(project.budget ?? 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</P>
                 </div>
                 <div className='flex flex-col justify-center items-center'>
                     <P>
-                        <StarAvaliation disabled={true}/>
+                        <StarAvaliation disabled={true} grade={project.averageGrade} />
                         {`${project.quantComments} Commentarios`}
                     </P>
-                    <P>
-                        {50}
-                    </P>
+                    <P> {`${project.quantSteps} Etapas`}</P>
                     <h4 className='font-bold tracking-tight text-gray-900 dark:text-white"'>
-                        {project.author}
+                        {project?.User?.name || ""}
                     </h4>
                 </div>
 

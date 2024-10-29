@@ -1,61 +1,78 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import Card from "@/components/Card";
-import FormSearch from "@/components/FormSearch";
+import { useState, useEffect } from 'react';
+//Contexts
+import { useProject } from "@/contexts/ProjectContext";
+import { useStep } from '@/contexts/StepContext';
+import { useComment } from '@/contexts/CommentContext';
+//Components
+import Card from "@/components/Card"
+import FormSearch from "@/components/FormSearch"
 import Project from "@/components/Project";
-import iProject from "@/types/iProject";
+import LoadingScreen from '@/components/LoadingScreen';
+//Types
+import iProject from "@/types/iProject"
 
-export default function FindProject() {
-    const [oProject, setProject] = useState<iProject[]>([]);
-    const [selectedProject, setSelectedProject] = useState<iProject | null>(null);
+export default function findProject() {
+    const { project, setProject, getProjects } = useProject();
+    const { getSteps } = useStep();
+    const { getComments } = useComment();
+
+    const [loading, setLoading] = useState(true);
+
 
     useEffect(() => {
-        const fetchProjects = async () => {
+        const fetchData = async () => {
+            setLoading(true);
             try {
-                const response = await fetch("https://07e2fc8b-a91a-47a9-a85e-f5e45e515b2e.mock.pstmn.io/project");
-                const data = await response.json();
+                const data = await getProjects();
+                const uComment = await getComments(data);
+                const uProject = await getSteps(uComment);
 
-                // Verifique se o dado retornado é um array
-                if (Array.isArray(data)) {
-                    setProject(data);
-                } else {
-                    console.error("Dados retornados não são um array", data);
-                    setProject([]); // Defina como array vazio se não for um array
-                }
-            } catch (error) {
-                console.error("Erro ao buscar projetos:", error);
-                setProject([]); // Em caso de erro, defina como array vazio
+                setProject(uProject);
+            } finally {
+                setLoading(false);
             }
         };
-        fetchProjects();
+        fetchData();
     }, []);
 
-    const openProject = (project: iProject) => {
-        setSelectedProject(project);
+    if (loading) {
+        return <LoadingScreen />;
+    }
+
+    const openProject = (selectedProj: iProject) => {
+        const updatedProjects = project.map((proj) =>
+            proj.id === selectedProj.id ? { ...proj, selected: true } : { ...proj, selected: false }
+        );
+        setProject(updatedProjects);
     };
+
+    const findProject = true;
 
     return (
         <div className="container mx-auto min-h-screen">
             <FormSearch />
             <div className="flex space-x-4 w-full p-4">
-                {/* Verifique se oProject é um array antes de usar o map */}
+
                 <section className="w-full min-h-screen flex flex-col items-center shadow-lg p-4">
-                    {oProject.length > 0 ? (
-                        oProject.map((project) => (
-                            <Card key={project.id} project={project} onClick={() => openProject(project)} />
-                        ))
-                    ) : (
-                        <p>Nenhum projeto encontrado.</p>
-                    )}
+                    {project.map((project) => (
+                        <Card key={project.id} project={project} onClick={() => openProject(project)} />
+                    ))}
                 </section>
 
                 <section className="w-full min-h-screen shadow-lg p-4" id="projectContainer">
-                    {selectedProject && (
-                        <Project key={selectedProject.id} project={selectedProject} findProject={true} />
+                    {project?.find((proj) => proj.selected) ? (
+                        <Project
+                            key={project.find((proj) => proj.selected)?.id}
+                            sProject={project.find((proj) => proj.selected)!}
+                            findProject={findProject}
+                        />
+                    ) : (
+                        <div className="text-gray-500 flex justify-center">Nenhum projeto selecionado</div>
                     )}
                 </section>
             </div>
         </div>
-    );
+    )
 }

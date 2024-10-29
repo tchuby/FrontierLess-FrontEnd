@@ -1,6 +1,7 @@
 export default interface iStep {
-    id: number
-    name: string;
-    cost: number;
-    description: string;
+    id?: number;
+    name?: string;
+    description?: string;
+    cost?: number;
+    ProjectId?: number
 }
