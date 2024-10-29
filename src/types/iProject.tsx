@@ -5,17 +5,17 @@ import iUser from "./iUser";
 export default interface iProject {
     id?: number;
     destination: string;
-    status?: string;
     exchangeType: string;
+    status?: string;
+    steps: iStep[];
+    comments: iComment[];
+    User: iUser;
     createdAt?: Date,
     updatedAt?: Date,
     budget?: number;
-    User?: iUser;
-    steps?: iStep[];
-    comments?: iComment[];
     img?: string;
     averageGrade?: number;
     quantComments?: number;
     quantSteps?: number;
-
+    selected?: boolean;
 }

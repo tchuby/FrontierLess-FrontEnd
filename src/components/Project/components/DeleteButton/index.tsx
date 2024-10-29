@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useProject } from "@/contexts/ProjectContext";
-
-import Popup from "@/components/Popup";
+import DeleteProjectPopup from '@/components/Popup/components/DeleteProjectPopup';
 
 interface Props {
     project: any,
@@ -28,7 +27,7 @@ export default function DeleteButton({ project }: Props) {
             <button type="button" onClick={handleDeleteClick} className="text-sm bg-transparent hover:text-red-700 text-red-500 py-2 px-4 mb-4 md:mb-0 md:mr-4">
                 Deletar projeto
             </button>
-            <Popup isOpen={isPopupOpen} onClose={handleClosePopup} onConfirm={hDeleteProject} />
+            <DeleteProjectPopup isOpen={isPopupOpen} onClose={handleClosePopup} onConfirm={hDeleteProject} />
         </>
     )
 }

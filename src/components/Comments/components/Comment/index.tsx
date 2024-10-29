@@ -6,6 +6,8 @@ import CommentSettings from "../CommentSettings";
 import { getUserById } from "@/services/userServices";
 //Contexts
 import { useProject } from '@/contexts/ProjectContext';
+import { useComment } from '@/contexts/CommentContext';
+
 //Types
 import iUser from "@/types/iUser";
 import iProject from '@/types/iProject';
@@ -13,7 +15,6 @@ import iProject from '@/types/iProject';
 interface Props {
     comment: any;
     projectID: any;
-
 }
 
 export default function Comment({ comment, projectID }: Props) {
@@ -21,9 +22,10 @@ export default function Comment({ comment, projectID }: Props) {
     const [isEditing, setIsEditing] = useState(false);
     const [editedComment, setEditedComment] = useState(comment.description);
     const [editedGrade, setEditedGrade] = useState(comment.grade);
+    const [currentComment, setCurrentComment] = useState(comment);
+    const [isVisible, setIsVisible] = useState(true);
 
-    const { deleteComment, updateComment } = useProject();
-
+    const { updateComment, deleteComment } = useComment();
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -47,16 +49,19 @@ export default function Comment({ comment, projectID }: Props) {
             description: editedComment,
             grade: editedGrade
         };
-        await updateComment(nComment, commentID, projectID);
+        await updateComment(nComment, commentID);
         setIsEditing(false);
+        setCurrentComment({ ...currentComment, ...nComment });
     };
 
     const handleDelete = async () => {
         await deleteComment(projectID, comment.id)
         setIsEditing(false);
+        setIsVisible(false);
     };
 
-    const formattedDate = new Date(comment.updatedAt).toLocaleDateString('pt-BR');
+    if (!isVisible) return null;
+    const formattedDate = new Date(currentComment.updatedAt).toLocaleDateString('pt-BR');
 
     return (
         <article className="p-6 text-base bg-white rounded-lg dark:bg-gray-900 w-full">
@@ -69,7 +74,7 @@ export default function Comment({ comment, projectID }: Props) {
                     {isEditing ? (
                         <StarAvaliation grade={editedGrade} onChange={setEditedGrade} disabled={false} />
                     ) : (
-                        <StarAvaliation grade={comment.grade} disabled={true} />
+                        <StarAvaliation grade={currentComment.grade} disabled={true} />
                     )}
                     <CommentSettings onEdit={handleEdit} onRemove={handleDelete} />
                 </div>
@@ -89,7 +94,7 @@ export default function Comment({ comment, projectID }: Props) {
                         </button>
                     </div>
                 ) : (
-                    <p>{comment.description}</p>
+                    <p>{currentComment.description}</p>
                 )}
             </div>
         </article>

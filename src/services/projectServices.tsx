@@ -1,8 +1,9 @@
+import iProject from "@/types/iProject";
 import axios from "axios";
 
 const API_URL = "http://localhost:3000/project";
 
-export const addProjectService = async (newProject: any) => {
+export const addProjectService = async (newProject: iProject) => {
     try {
         const response = await axios.post(API_URL, newProject, {
             withCredentials: true
@@ -17,6 +18,18 @@ export const addProjectService = async (newProject: any) => {
 export const deleteProjectService = async (projectID: number) => {
     try {
         const response = await axios.delete(`${API_URL}/${projectID}`, {
+            withCredentials: true
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Erro ao deletar projetos:", error);
+        throw error;
+    }
+};
+
+export const updateProjectService = async (projectID: number, projectUpdate: iProject) => {
+    try {
+        const response = await axios.put(`${API_URL}/${projectID}`, projectUpdate, {
             withCredentials: true
         });
         return response.data;

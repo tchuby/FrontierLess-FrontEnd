@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
+//Contexts
 import { useProject } from '@/contexts/ProjectContext';
-
 //Components
 import Select from '../Select';
 import Accordion from "./components/Accordion";
@@ -13,62 +13,80 @@ import Button from '../Button';
 //Types
 import iStep from "@/types/iStep";
 import iProject from '@/types/iProject';
+import { useStep } from '@/contexts/StepContext';
 
 interface Props {
-    selectedProject: iProject,
+    sProject: iProject,
     findProject?: boolean,
-    setSelectedProject: React.Dispatch<React.SetStateAction<iProject | null>>;
-
 }
 
-export default function Project({ selectedProject, findProject, setSelectedProject }: Props) {
-    const [steps, setSteps] = useState<iStep[]>([]);
+export default function Project({ sProject, findProject }: Props) {
     const { project, setProject, addProject, updateProject } = useProject();
-
-    const newStep: iStep = {
-        id: 0,
-        name: "",
-        cost: 0,
-        description: ""
-    };
-    const addStep = () => {
-        setSteps([...steps, newStep]);
-    };
+    const { addStep, updateStep } = useStep();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
-        setProject(project.map((proj) => proj.id === selectedProject.id ? { ...proj, [name]: value } : proj));
-        setSelectedProject(prev => prev ? { ...prev, [name]: value } : prev);
+        setProject(project.map((proj) => proj.id === sProject.id ? { ...proj, [name]: value } : proj));
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        try {
-            if (selectedProject.id && selectedProject.id !== 0) {
-                await updateProject(selectedProject.id, selectedProject);
-            } else {
-                if (selectedProject.destination === "") {
-                    alert("Favor insira um destino");
-                    return;
+    const handleStepChange = (updatedStep: iStep, index: number) => {
+        setProject(project.map(proj =>
+            proj.id === sProject.id
+                ? {
+                    ...proj,
+                    steps: proj.steps?.map((step, i) => i === index ? updatedStep : step)
                 }
-                if (selectedProject.exchangeType === "") {
-                    alert("Favor insira um tipo de intercâmbio");
-                    return;
-                }
-                await addProject(selectedProject);
+                : proj
+        ));
+    };
+
+
+    const saveProject = async () => {
+        if (sProject.id && sProject.id !== 0) {
+            await updateProject(sProject.id, sProject);
+        } else {
+            if (!sProject.destination || !sProject.exchangeType) {
+                alert("Favor insira um destino e um tipo de intercâmbio");
+                return;
             }
-        } catch (error) {
-            console.error(error);
+            await addProject(sProject);
+        }
+
+        for (const step of sProject.steps) {
+            if (!step.name || !step.description) {
+                alert("Favor insira um nome e descrição para cada etapa");
+                return;
+            }
+
+            if (step.id && step.id !== 0) {
+                await updateStep(step.id, step);
+            } else {
+                await addStep(step);
+            }
         }
     };
 
-    useEffect(() => {
-        setSteps(selectedProject.steps || []);
-    }, [selectedProject.steps]);
+
+    const onAddStep = () => {
+        const newStep: iStep = {
+            name: "",
+            cost: 0,
+            description: "",
+            ProjectId: sProject.id
+        };
+        setProject(project.map((proj) =>
+            proj.id === sProject.id ?
+                {
+                    ...proj,
+                    steps: [...(proj.steps || []), newStep]
+                }
+                : proj
+        ));
+    };
 
     return (
         <>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={saveProject}>
                 <div className="border-b border-gray-900/10 pb-12">
                     <div className="flex justify-between">
                         <input
@@ -76,12 +94,12 @@ export default function Project({ selectedProject, findProject, setSelectedProje
                             name="destination"
                             type="text"
                             onChange={handleChange}
-                            value={selectedProject.destination}
+                            value={sProject.destination}
                             placeholder='Destino'
                             className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
                             disabled={findProject}
                         />
-                        <H2>{selectedProject.User?.name}</H2>
+                        <H2>{sProject.User?.name}</H2>
                     </div>
 
                     <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -90,7 +108,7 @@ export default function Project({ selectedProject, findProject, setSelectedProje
                             name="status"
                             label="Status"
                             disabled={findProject}
-                            select={selectedProject.status}
+                            select={sProject.status}
                             onChange={handleChange}>
                             <option value="progredindo">Progredindo</option>
                             <option value="hiato">Hiato</option>
@@ -103,7 +121,7 @@ export default function Project({ selectedProject, findProject, setSelectedProje
                             name="exchangeType"
                             label="Tipo"
                             disabled={findProject}
-                            select={selectedProject.exchangeType}
+                            select={sProject.exchangeType}
                             onChange={handleChange}>
                             <option value=""></option>
                             <option value="idioma">Idioma</option>
@@ -115,7 +133,7 @@ export default function Project({ selectedProject, findProject, setSelectedProje
                         <div>
                             <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Custo total</label>
                             <h2 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                {Number(selectedProject.budget ?? 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                                {Number(sProject.budget ?? 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                             </h2>
                         </div>
                     </div>
@@ -126,22 +144,22 @@ export default function Project({ selectedProject, findProject, setSelectedProje
                         <button
                             disabled={findProject}
                             type="button"
-                            onClick={addStep}
+                            onClick={onAddStep}
                             title="Adicionar Etapa"
                             className="mt-5 text-2xl font-bold tracking-tight text-gray-900 dark:text-white hover:text-blue-900">
                             + Etapas
                         </button>
                     </div>
-                    {steps.map((step, i) => (
-                        <Accordion key={step.id} step={step} findProject={findProject} />
+                    {sProject.steps?.map((step, i) => (
+                        <Accordion key={i} step={step} findProject={findProject} onChange={handleStepChange} index={i} />
                     ))}
                 </div>
 
                 {!findProject && (
                     <div className="mt-4 pb-4 flex flex-col md:flex-row items-center justify-between border-b border-gray-900/10">
-                        <DeleteButton project={selectedProject} />
+                        <DeleteButton project={sProject} />
                         <div className="flex flex-col md:flex-row space-x-1">
-                            <SaveButton />
+                            <SaveButton onSave={saveProject} />
                             <CancelButton />
                         </div>
                     </div>
@@ -154,8 +172,9 @@ export default function Project({ selectedProject, findProject, setSelectedProje
                 )}
             </form>
             <div className='w-full'>
-                <Comments selectedProject={selectedProject} setSelectedProject={setSelectedProject} />
+                <Comments sProject={sProject} />
             </div>
         </>
     );
+
 }

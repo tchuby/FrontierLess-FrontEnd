@@ -1,15 +1,20 @@
 import { useState } from 'react';
-import { useProject } from "@/contexts/ProjectContext";
+import { useStep } from '@/contexts/StepContext';
 
 import iStep from "@/types/iStep"
 
 interface Props {
     step: iStep;
-    findProject: any
+    findProject: any;
+    onChange?: (updatedStep: iStep, index: any) => void;
+    index?: number
 }
 
-export default function Accordion({ step, findProject }: Props) {
+export default function Accordion({ step, findProject, onChange, index }: Props) {
+    const { deleteStep } = useStep();
+
     const [isOpen, setIsOpen] = useState(false);
+    const [isVisible, setIsVisible] = useState(true);
     const toggleAccordion = () => {
         setIsOpen(!isOpen);
     };
@@ -17,8 +22,19 @@ export default function Accordion({ step, findProject }: Props) {
     const [localEtapa, setLocalEtapa] = useState(step);
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
-        setLocalEtapa({ ...localEtapa, [name]: value });
+        const updatedStep = { ...localEtapa, [name]: value };
+        setLocalEtapa(updatedStep);
+        if (onChange) {
+            onChange(updatedStep, index);
+        }
     };
+
+    const onDeleteStep = async () => {
+        await deleteStep(step.id);
+        setIsVisible(false);
+    };
+
+    if (!isVisible) return null;
 
     return (
         <div className="border border-slate-200 w-full rounded">
@@ -32,7 +48,8 @@ export default function Accordion({ step, findProject }: Props) {
                         value={localEtapa.name}
                         onChange={handleInputChange}
                         className="w-full font-bold"
-                        disabled={findProject} />
+                        disabled={findProject}
+                    />
                 </span>
                 <span id="icon-1" className={`text-slate-800 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4">
@@ -40,7 +57,7 @@ export default function Accordion({ step, findProject }: Props) {
                     </svg>
                 </span>
             </button>
-            <div id="content-1" className={`px-4 overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-100' : 'max-h-0'}`} >
+            <div id="content-1" className={`px-4 overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-100' : 'max-h-0'}`}>
                 <div className="text-sm text-slate-500 pb-3">
                     <label htmlFor="cost" className="block text-sm font-medium leading-6 text-gray-900">Custo</label>
                     <input
@@ -53,7 +70,7 @@ export default function Accordion({ step, findProject }: Props) {
                         disabled={findProject}
                     />
                     <div>
-                        <label htmlFor="description" className="block text-sm font-medium leading-6 text-gray-900">Descriçao</label>
+                        <label htmlFor="description" className="block text-sm font-medium leading-6 text-gray-900">Descrição</label>
                         <textarea
                             name="description"
                             id="description"
@@ -64,7 +81,7 @@ export default function Accordion({ step, findProject }: Props) {
                             disabled={findProject}
                         />
                     </div>
-                    <button type="button" className="text-red-700 font-bold mt-3 w-full text-right hover:text-red-800 transition-colors">Deletar Etapa</button>
+                    <button type="button" disabled={findProject} onClick={onDeleteStep} className="text-red-700 font-bold mt-3 w-full text-right hover:text-red-800 transition-colors">Deletar Etapa</button>
                 </div>
             </div>
         </div>
