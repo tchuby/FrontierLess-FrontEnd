@@ -58,7 +58,6 @@ export default function ProjectProvider({ children }: Props) {
         const projects = await getAllProjectsService();
         setProject(projects.projects)
         return projects.projects
-        // await Promise.all(projects.projects.map((proj: iProject) => getProjectData(proj.id || -1)));s
     };
 
     return (

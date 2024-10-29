@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { login } from "@/services/authServices"
+import { login } from "@/services/authServices";
 import { useUser } from "@/contexts/UserContext";
+import { useRouter } from "next/navigation";
 
 import Button from "../Button";
 import Input from "../Input";
@@ -8,6 +9,7 @@ import Link from "../Link";
 
 export default function FormLogin() {
     const { setUser } = useUser();
+    const router = useRouter();
 
     const [formData, setFormData] = useState({
         email: "",
@@ -24,6 +26,7 @@ export default function FormLogin() {
             const data = await login(formData);
             setUser(data.user);
             console.log(">>>:", data.message);
+            router.push("/profile");
         } catch (error) {
             console.error(">>>:", error);
         }

@@ -1,11 +1,19 @@
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+//Service
 import { createUser } from "@/services/userServices"
-
+import { login } from "@/services/authServices";
+//Context
+import { useUser } from "@/contexts/UserContext";
+//Components
 import Input from "../Input";
 import Button from "../Button";
 import Link from "../Link";
 
 export default function FormRegister() {
+    const { setUser } = useUser();
+    const router = useRouter();
+
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -20,14 +28,20 @@ export default function FormRegister() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
         try {
-            const data = await createUser(formData);
-            console.log("User registered successfully:", data);
+            const register = await createUser(formData);
+            console.log("User registered successfully:", register);
+            const lgn = await login(formData);
+            setUser(lgn.user);
+            router.push("/profile");
         } catch (error) {
-            console.error("Error registering user:", error);
+            console.error(error);
         }
     };
+
+
+
+
 
     return (
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">

@@ -13,9 +13,11 @@ import Project from "@/components/Project";
 import LoadingScreen from '@/components/LoadingScreen';
 //Types
 import iProject from "@/types/iProject"
+//Service
+import { getProfile } from '@/services/profileService';
 
 export default function Profile() {
-    const { project, setProject, addProject, getProjects } = useProject();
+    const { project, setProject, addProject } = useProject();
     const { getSteps } = useStep();
     const { getComments } = useComment();
     const { user } = useUser();
@@ -26,8 +28,8 @@ export default function Profile() {
         const fetchData = async () => {
             setLoading(true);
             try {
-                const data = await getProjects();
-                const uComment = await getComments(data);
+                const data = await getProfile();
+                const uComment = await getComments(data.userProjects);
                 const uProject = await getSteps(uComment);
 
                 setProject(uProject);
@@ -76,16 +78,13 @@ export default function Profile() {
                         <button type="button" onClick={hAddProject} title="Cria Projeto" className="hover:text-blue-900 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">+ Projetos</button>
                     </div>
                     {Array.isArray(project) && project.length > 0 ? (
-                        project.some((proj) => proj.User?.id === (user?.id || -1)) ? (
-                            project.map((proj) => (
-                                proj.User?.id === (user?.id || -1) ? (
-                                    <Card key={proj.id} project={proj} onClick={() => openProject(proj)} />
-                                ) : null
-                            ))
-                        ) : (
-                            <div className="text-gray-500">Nenhum projeto Encontrado</div>
-                        )
-                    ) : null}
+                        project.map((proj) => (
+                            <Card key={proj.id} project={proj} onClick={() => openProject(proj)} />
+                        ))
+                    ) : (
+                        <div className="text-gray-500">Nenhum projeto Encontrado</div>
+                    )}
+
                 </section>
 
                 <section className="w-full p-4 min-h-screen shadow-lg" id="projectContainer">

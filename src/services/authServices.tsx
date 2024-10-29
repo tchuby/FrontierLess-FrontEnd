@@ -7,7 +7,6 @@ export const login = async (formData: any) => {
         const response = await axios.post(API_URL + "/login", formData, {
             withCredentials: true
         });
-
         return response.data;
     } catch (error) {
         throw error;

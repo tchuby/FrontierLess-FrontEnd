@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useUser } from '@/contexts/UserContext';
 import { logout } from "@/services/authServices"
+import { useRouter } from "next/navigation";
 
 import LinkMenu from './components/LinkMenu';
 import MenuIcon from './components/MenuIcon';
@@ -9,6 +10,7 @@ import NotificationIcon from './components/NotificationIcon';
 
 export default function Nav() {
     const { user, setUser } = useUser();
+    const router = useRouter();
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const toggleMenu = () => {
@@ -21,6 +23,7 @@ export default function Nav() {
             const data = await logout();
             setUser(null);
             console.log(">>>:", data);
+            router.push("/login");
         } catch (error) {
             console.error(">>>:", error);
         }
