@@ -1,9 +1,9 @@
 "use client";
 
 import { createContext, useContext, useState } from 'react';
-import { getAllProjectsService, getItemsService, addProjectService, getReviewService } from "@/services/projectServices";
-import { useUser } from './UserContext';
-
+//Services
+import { addProjectService, deleteProjectService, updateProjectService, getAllProjectsService } from "@/services/projectServices";
+//Types
 import iProject from "@/types/iProject";
 
 interface Props {
@@ -15,79 +15,62 @@ interface ProjectContextType {
     setProject: (projects: iProject[]) => void;
     addProject: (newProject: iProject) => void;
     deleteProject: (id: number) => void;
-    saveProject: (id: number, updatedProject: iProject) => void;
-    getProjects: () => void
+    updateProject: (projectID: number, projectUpdate: iProject) => void;
+    getProjects: () => Promise<iProject[]>
 }
 
 export const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
 
 export default function ProjectProvider({ children }: Props) {
     const [project, setProject] = useState<iProject[]>([]);
-    const { user } = useUser();
-
     const addProject = async (newProject: iProject) => {
-        if (newProject.destination === "" && newProject.exchangeType === "") {
-            setProject((prevProjects) => [...prevProjects, newProject]);
-        }
-        if (newProject.destination !== "" && newProject.exchangeType !== "") {
+        try {
+            if (newProject.destination === "" && newProject.exchangeType === "") {
+                setProject((prevProjects) => [...prevProjects, newProject]);
+                return;
+            }
             const data = await addProjectService(newProject);
+            console.log(data.message)
+
+        } catch (error) {
+            console.log(error)
         }
     }
 
-    const saveProject = (id: number, updatedProject: iProject) => {
-    };
-
-    const deleteProject = (id: number) => {
-    };
-
-    const getProjectData = async (projectID: number) => {
-        let steps = [];
-        let comments = [];
-        let quantComments = 0;
-        let averageGrade = 0;
+    const updateProject = async (projectID: number, updatedProject: iProject) => {
         try {
-            steps = await getItemsService(projectID);
-            comments = await getReviewService(projectID);
-            quantComments = comments.length;
+            const data = await updateProjectService(projectID, updatedProject);
+            console.log(data.message)
 
-            if (quantComments > 0) {
-                const totalGrades = comments.reduce((acc: any, comment: any) => acc + comment.grade, 0);
-                averageGrade = totalGrades / quantComments;
-            }
         } catch (error) {
-            console.error(`Erro ao buscar dados do projeto ${projectID}:`, error);
+            console.log(error)
         }
-        setProject(prevProjects => {
-            const updatedProjects = prevProjects.map(proj => {
-                if (proj.id === projectID) {
-                    return {
-                        ...proj,
-                        steps: steps || [],
-                        quantSteps: steps.length,
-                        comments: comments || [],
-                        quantComments: comments.length,
-                        averageGrade: averageGrade
-                    };
-                }
-                return proj;
-            });
-            return updatedProjects;
-        });
     };
 
+    const deleteProject = async (projectId: number) => {
+        const data = await deleteProjectService(projectId);
+        if (data) {
+            setProject((prevProjects: iProject[]) => prevProjects.filter(proj => proj.id !== projectId));
+        }
+    };
 
     const getProjects = async () => {
-        try {
-            const projects = await getAllProjectsService();
-            setProject(projects.projects);
-            await Promise.all(projects.projects.map((proj: iProject) => getProjectData(proj.id || -1)));
-        } catch (error) {
-            console.error("Erro ao buscar projetos:", error);
-        }
+        const projects = await getAllProjectsService();
+        setProject(projects.projects)
+        return projects.projects
+        // await Promise.all(projects.projects.map((proj: iProject) => getProjectData(proj.id || -1)));s
     };
 
     return (
-        <ProjectContext.Provider value={{ project, setProject, addProject, deleteProject, saveProject, getProjects }}>
+        <ProjectContext.Provider
+            value={{
+                project,
+                setProject,
+                addProject,
+                deleteProject,
+                updateProject,
+                getProjects
+            }}>
             {children}
         </ProjectContext.Provider>
     );

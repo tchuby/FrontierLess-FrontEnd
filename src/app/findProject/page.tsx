@@ -1,23 +1,52 @@
 "use client";
 
-import { useProject } from "@/contexts/ProjectContext";
 import { useState, useEffect } from 'react';
+//Contexts
+import { useProject } from "@/contexts/ProjectContext";
+import { useStep } from '@/contexts/StepContext';
+import { useComment } from '@/contexts/CommentContext';
 
+//Components
 import Card from "@/components/Card"
 import FormSearch from "@/components/FormSearch"
 import Project from "@/components/Project";
+import LoadingScreen from '@/components/LoadingScreen';
+//Types
 import iProject from "@/types/iProject"
 
 export default function findProject() {
-    const { project, getProjects } = useProject();
-    const [selectedProject, setSelectedProject] = useState<iProject | null>(null);
+    const { project, setProject, getProjects } = useProject();
+    const { getSteps } = useStep();
+    const { getComments } = useComment();
+
+    const [loading, setLoading] = useState(true);
+
 
     useEffect(() => {
-        getProjects();
+        const fetchData = async () => {
+            setLoading(true);
+            try {
+                const data = await getProjects();
+                const uComment = await getComments(data);
+                const uProject = await getSteps(uComment);
+
+                setProject(uProject);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchData();
     }, []);
 
-    const openProject = (project: iProject) => {
-        setSelectedProject(project);
+    if (loading) {
+        return <LoadingScreen />;
+    }
+
+    const openProject = (selectedProj: iProject) => {
+        const updatedProjects = project.map((proj) =>
+            proj.id === selectedProj.id ? { ...proj, selected: true } : { ...proj, selected: false }
+        );
+        setProject(updatedProjects);
     };
 
     const findProject = true;
@@ -34,8 +63,14 @@ export default function findProject() {
                 </section>
 
                 <section className="w-full min-h-screen shadow-lg p-4" id="projectContainer">
-                    {selectedProject && (
-                        <Project key={selectedProject.id} selectedProject={selectedProject} setSelectedProject={setSelectedProject} findProject={findProject} />
+                    {project?.find((proj) => proj.selected) ? (
+                        <Project
+                            key={project.find((proj) => proj.selected)?.id}
+                            sProject={project.find((proj) => proj.selected)!}
+                            findProject={findProject}
+                        />
+                    ) : (
+                        <div className="text-gray-500 flex justify-center">Nenhum projeto selecionado</div>
                     )}
                 </section>
             </div>

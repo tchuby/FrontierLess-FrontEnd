@@ -3,6 +3,8 @@ import Nav from '@/components/Nav'
 
 //Contexts
 import ProjectProvider from "@/contexts/ProjectContext";
+import StepProvider from '@/contexts/StepContext';
+import CommentProvider from '@/contexts/CommentContext';
 import UserProvider from '@/contexts/UserContext';
 
 
@@ -17,8 +19,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <UserProvider>
           <ProjectProvider>
-            <Nav />
-            {children}
+            <StepProvider>
+              <CommentProvider>
+                <Nav />
+                {children}
+              </CommentProvider>
+            </StepProvider>
           </ProjectProvider>
         </UserProvider>
 

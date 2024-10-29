@@ -8,7 +8,7 @@ import MenuIcon from './components/MenuIcon';
 import NotificationIcon from './components/NotificationIcon';
 
 export default function Nav() {
-    const { user } = useUser();
+    const { user, setUser } = useUser();
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const toggleMenu = () => {
@@ -17,10 +17,10 @@ export default function Nav() {
 
     const handlelogout = async (e: React.FormEvent) => {
         e.preventDefault();
-
         try {
             const data = await logout();
-            console.log(">>>:", data.message);
+            setUser(null);
+            console.log(">>>:", data);
         } catch (error) {
             console.error(">>>:", error);
         }
@@ -33,7 +33,7 @@ export default function Nav() {
                     <div className="mx-auto px-2 sm:px-6 lg:px-8 relative flex h-16 items-center justify-between">
                         <MenuIcon onClick={toggleMenu} />
                         <div className="sm:block hidden items-center">
-                            <h1 className="px-3 py-2 text-3xl font-bold text-gray-300 ">ForntierLess</h1>
+                            <h1 className="px-3 py-2 text-3xl font-bold text-gray-300 ">FrontierLess</h1>
                         </div>
                         <div className="flex space-x-4 flex-1 hidden sm:ml-6 sm:block items-center justify-center sm:items-stretch sm:justify-start">
                             <LinkMenu href="/" >Início</LinkMenu>

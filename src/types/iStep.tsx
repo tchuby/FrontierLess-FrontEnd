@@ -3,4 +3,5 @@ export default interface iStep {
     name?: string;
     description?: string;
     cost?: number;
+    ProjectId?: number
 }

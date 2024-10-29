@@ -10,7 +10,6 @@ interface Props {
 }
 
 export default function Card({ project, onClick }: Props) {
-    const formBudget = project.budget;
     return (
         <button onClick={onClick} className="w-full flex items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl hover:ms-2 hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
             <div className="hidden md:block md:w-2/5 h-full">
@@ -21,7 +20,7 @@ export default function Card({ project, onClick }: Props) {
                     <H2>{project.destination}</H2>
                     <P>Status: {project.status}</P>
                     <P>Tipo: {project.exchangeType}</P>
-                    <P>Valor: {`R$ ${formBudget}`}</P>
+                    <P>Valor:{Number(project.budget ?? 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</P>
                 </div>
                 <div className='flex flex-col justify-center items-center'>
                     <P>

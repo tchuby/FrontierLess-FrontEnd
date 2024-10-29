@@ -1,9 +1,16 @@
+import { useState, useEffect } from 'react';
+//Components
 import StarAvaliation from "@/components/StarAvaliation";
 import CommentSettings from "../CommentSettings";
+//Services
 import { getUserById } from "@/services/userServices";
-import { updateReviewService, deleteReviewService } from "@/services/projectServices";
-import { useState, useEffect } from 'react';
+//Contexts
+import { useProject } from '@/contexts/ProjectContext';
+import { useComment } from '@/contexts/CommentContext';
+
+//Types
 import iUser from "@/types/iUser";
+import iProject from '@/types/iProject';
 
 interface Props {
     comment: any;
@@ -15,6 +22,10 @@ export default function Comment({ comment, projectID }: Props) {
     const [isEditing, setIsEditing] = useState(false);
     const [editedComment, setEditedComment] = useState(comment.description);
     const [editedGrade, setEditedGrade] = useState(comment.grade);
+    const [currentComment, setCurrentComment] = useState(comment);
+    const [isVisible, setIsVisible] = useState(true);
+
+    const { updateComment, deleteComment } = useComment();
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -33,35 +44,24 @@ export default function Comment({ comment, projectID }: Props) {
         setIsEditing(true);
     };
 
-    const handleSave = async () => {
-        const eComment = {
+    const handleUpdate = async (commentID: number) => {
+        const nComment = {
             description: editedComment,
             grade: editedGrade
-        }
-        try {
-            const data = await updateReviewService(eComment, comment.id);
-            setUser(data);
-        } catch (error) {
-            console.error(error);
-        }
+        };
+        await updateComment(nComment, commentID);
         setIsEditing(false);
+        setCurrentComment({ ...currentComment, ...nComment });
     };
 
     const handleDelete = async () => {
-        const eComment = {
-            description: editedComment,
-            grade: editedGrade
-        }
-        try {
-            const data = await deleteReviewService(projectID, comment.id);
-            setUser(data);
-        } catch (error) {
-            console.error(error);
-        }
+        await deleteComment(projectID, comment.id)
         setIsEditing(false);
+        setIsVisible(false);
     };
 
-    const formattedDate = new Date(comment.updatedAt).toLocaleDateString('pt-BR');
+    if (!isVisible) return null;
+    const formattedDate = new Date(currentComment.updatedAt).toLocaleDateString('pt-BR');
 
     return (
         <article className="p-6 text-base bg-white rounded-lg dark:bg-gray-900 w-full">
@@ -74,7 +74,7 @@ export default function Comment({ comment, projectID }: Props) {
                     {isEditing ? (
                         <StarAvaliation grade={editedGrade} onChange={setEditedGrade} disabled={false} />
                     ) : (
-                        <StarAvaliation grade={comment.grade} disabled={true} />
+                        <StarAvaliation grade={currentComment.grade} disabled={true} />
                     )}
                     <CommentSettings onEdit={handleEdit} onRemove={handleDelete} />
                 </div>
@@ -88,13 +88,13 @@ export default function Comment({ comment, projectID }: Props) {
                             className="w-full p-2 border border-gray-300 rounded dark:bg-gray-800 dark:text-white"
                         />
                         <button
-                            onClick={handleSave}
+                            onClick={() => handleUpdate(comment.id)}
                             className="text-sm bg-emerald-500 hover:bg-emerald-700 text-white font-bold py-1 px-2 rounded mt-2">
                             Salvar
                         </button>
                     </div>
                 ) : (
-                    <p>{comment.description}</p>
+                    <p>{currentComment.description}</p>
                 )}
             </div>
         </article>
