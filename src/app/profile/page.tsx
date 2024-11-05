@@ -8,13 +8,13 @@ import { useComment } from '@/contexts/CommentContext';
 import { useUser } from '@/contexts/UserContext';
 //Components
 import Card from "@/components/Card"
-import FormSearch from "@/components/FormSearch"
 import Project from "@/components/Project";
 import LoadingScreen from '@/components/LoadingScreen';
 //Types
 import iProject from "@/types/iProject"
 //Service
 import { getProfile } from '@/services/profileService';
+import { followerProjectsService } from '@/services/projectServices';
 
 export default function Profile() {
     const { project, setProject, addProject } = useProject();
@@ -29,9 +29,11 @@ export default function Profile() {
             setLoading(true);
             try {
                 const data = await getProfile();
-                const uComment = await getComments(data.userProjects);
-                const uProject = await getSteps(uComment);
+                const followers = await followerProjectsService(user?.id || 0);
+                const combinedProjects = [...data.userProjects, ...followers];
 
+                const uComment = await getComments(combinedProjects);
+                const uProject = await getSteps(uComment);
                 setProject(uProject);
             } finally {
                 setLoading(false);
@@ -39,10 +41,6 @@ export default function Profile() {
         };
         fetchData();
     }, []);
-
-    if (loading) {
-        return <LoadingScreen />;
-    }
 
     const openProject = (selectedProj: iProject) => {
         const updatedProjects = project.map((proj) =>
@@ -71,19 +69,36 @@ export default function Profile() {
 
     return (
         <div className="container mx-auto min-h-screen">
-            <FormSearch />
             <div className="flex space-x-4 w-full p-4">
                 <section className="w-full min-h-screen flex flex-col items-center shadow-lg">
-                    <div className="w-full text-center mb-4">
-                        <button type="button" onClick={hAddProject} title="Cria Projeto" className="hover:text-blue-900 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">+ Projetos</button>
+                    <div className="w-full text-center mb-4 flex flex-col">
+                        <div className='space-x-2 p-3 flex justify-end'>
+                            <select className='border px-3 py-1'>
+                                <option value="Seguindo">Seguindo</option>
+                                <option value="S1">S1</option>
+                            </select>
+                            <select className='border px-3 py-1'>
+                                <option value="Seguidores">Seguidores</option>
+                                <option value="A1">A1</option>
+                            </select>
+
+                        </div>
+                        <button type="button" onClick={hAddProject} title="Cria Projeto" className="hover:text-blue-900 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                            + Projetos
+                        </button>
                     </div>
-                    {Array.isArray(project) && project.length > 0 ? (
-                        project.map((proj) => (
-                            <Card key={proj.id} project={proj} onClick={() => openProject(proj)} />
-                        ))
-                    ) : (
-                        <div className="text-gray-500">Nenhum projeto Encontrado</div>
-                    )}
+                    {
+                        loading ? (
+                            <LoadingScreen />
+                        )
+                            : (Array.isArray(project) && project.length > 0 ? (
+                                project.map((proj) => (
+                                    <Card key={proj.id} project={proj} onClick={() => openProject(proj)} />
+                                ))
+                            ) : (
+                                <div className="text-gray-500">Nenhum projeto Encontrado</div>
+                            ))
+                    }
 
                 </section>
 

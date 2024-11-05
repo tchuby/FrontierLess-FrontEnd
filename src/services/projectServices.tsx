@@ -51,5 +51,38 @@ export const getAllProjectsService = async () => {
     }
 };
 
+export const followProjectService = async (followProj: any) => {
+    try {
+        const response = await axios.post(`${API_URL}/follow`, followProj, {
+            withCredentials: true
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Erro ao seguir projetos:", error);
+        throw error;
+    }
+};
 
+export const followerProjectsService = async (userID: number) => {
+    try {
+        const response = await axios.get(`${API_URL}/followedprojects/${userID}`, {
+            withCredentials: true
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Erro ao buscar projetos:", error);
+        throw error;
+    }
+};
 
+export const unfollowProjectsService = async (projectID: number) => {
+    try {
+        const response = await axios.delete(`${API_URL}/unfollow/${projectID}`, {
+            withCredentials: true
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Erro ao deletar projetos:", error);
+        throw error;
+    }
+};

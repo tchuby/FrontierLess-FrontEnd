@@ -1,25 +1,24 @@
-"use client";
+'use client';
 
 import { useState, useEffect } from 'react';
-//Contexts
+// Contexts
 import { useProject } from "@/contexts/ProjectContext";
 import { useStep } from '@/contexts/StepContext';
 import { useComment } from '@/contexts/CommentContext';
-//Components
-import Card from "@/components/Card"
-import FormSearch from "@/components/FormSearch"
+// Components
+import Card from "@/components/Card";
+import FormSearch from "@/components/FormSearch";
 import Project from "@/components/Project";
 import LoadingScreen from '@/components/LoadingScreen';
-//Types
-import iProject from "@/types/iProject"
+// Types
+import iProject from "@/types/iProject";
 
-export default function findProject() {
+export default function FindProject() {
     const { project, setProject, getProjects } = useProject();
     const { getSteps } = useStep();
     const { getComments } = useComment();
 
     const [loading, setLoading] = useState(true);
-
 
     useEffect(() => {
         const fetchData = async () => {
@@ -37,10 +36,6 @@ export default function findProject() {
         fetchData();
     }, []);
 
-    if (loading) {
-        return <LoadingScreen />;
-    }
-
     const openProject = (selectedProj: iProject) => {
         const updatedProjects = project.map((proj) =>
             proj.id === selectedProj.id ? { ...proj, selected: true } : { ...proj, selected: false }
@@ -51,17 +46,30 @@ export default function findProject() {
     const findProject = true;
 
     return (
-        <div className="container mx-auto min-h-screen">
-            <FormSearch />
+        <div className="container mx-auto min-h-screen flex flex-col items-center justify-center">
+            <div className="p-4 max-w-xl w-full">
+                <FormSearch />
+            </div>
+
             <div className="flex space-x-4 w-full p-4">
+                <div className="w-full flex flex-col space-y-4">
+                    <section className="w-full min-h-screen flex flex-col items-center shadow-lg p-4 bg-white rounded-lg">
+                    <div className="w-full text-center mb-4">
+                        <p className="hover:text-blue-900 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Projetos</p>
+                    </div>
+                        {
+                            loading ? (
+                                <LoadingScreen />
+                            ) : (
+                                project.map((proj) => (
+                                    <Card key={proj.id} project={proj} onClick={() => openProject(proj)} />
+                                ))
+                            )
+                        }
+                    </section>
+                </div>
 
-                <section className="w-full min-h-screen flex flex-col items-center shadow-lg p-4">
-                    {project.map((project) => (
-                        <Card key={project.id} project={project} onClick={() => openProject(project)} />
-                    ))}
-                </section>
-
-                <section className="w-full min-h-screen shadow-lg p-4" id="projectContainer">
+                <section className="w-full min-h-screen shadow-lg p-4 bg-white rounded-lg" id="projectContainer">
                     {project?.find((proj) => proj.selected) ? (
                         <Project
                             key={project.find((proj) => proj.selected)?.id}
@@ -74,5 +82,5 @@ export default function findProject() {
                 </section>
             </div>
         </div>
-    )
+    );
 }

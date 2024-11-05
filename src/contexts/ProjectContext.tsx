@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState } from 'react';
 //Services
-import { addProjectService, deleteProjectService, updateProjectService, getAllProjectsService } from "@/services/projectServices";
+import { addProjectService, deleteProjectService, updateProjectService, getAllProjectsService, followProjectService } from "@/services/projectServices";
 //Types
 import iProject from "@/types/iProject";
 
@@ -17,12 +17,14 @@ interface ProjectContextType {
     deleteProject: (id: number) => void;
     updateProject: (projectID: number, projectUpdate: iProject) => void;
     getProjects: () => Promise<iProject[]>
+    followProject: (followProj: any) => void
 }
 
 export const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
 
 export default function ProjectProvider({ children }: Props) {
     const [project, setProject] = useState<iProject[]>([]);
+
     const addProject = async (newProject: iProject) => {
         try {
             if (newProject.destination === "" && newProject.exchangeType === "") {
@@ -60,6 +62,11 @@ export default function ProjectProvider({ children }: Props) {
         return projects.projects
     };
 
+    const followProject = async (followProj: any) => {
+        const res = await followProjectService(followProj);
+        console.log('Seguindo Projeto >>>: ' + res)
+    };
+
     return (
         <ProjectContext.Provider
             value={{
@@ -68,7 +75,8 @@ export default function ProjectProvider({ children }: Props) {
                 addProject,
                 deleteProject,
                 updateProject,
-                getProjects
+                getProjects,
+                followProject
             }}>
             {children}
         </ProjectContext.Provider>

@@ -1,6 +1,11 @@
 import { useState } from 'react';
+//Context
 import { useProject } from "@/contexts/ProjectContext";
+//Components
 import DeleteProjectPopup from '@/components/Popup/components/DeleteProjectPopup';
+//Services
+import { unfollowProjectsService } from '@/services/projectServices';
+
 
 interface Props {
     project: any,
@@ -18,8 +23,9 @@ export default function DeleteButton({ project }: Props) {
         setIsPopupOpen(false);
     };
 
-    const hDeleteProject = () => {
-        deleteProject(project.id);
+    const hDeleteProject = async () => {
+        await deleteProject(project.id);
+        await unfollowProjectsService(project.id);
         setIsPopupOpen(false);
     };
     return (

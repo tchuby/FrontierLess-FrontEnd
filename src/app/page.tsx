@@ -23,7 +23,7 @@ export default function Home() {
         <h1 className="text-4xl font-bold">FrontierLess</h1>
         <p className="mt-2">A experiência de intercâmbio que transforma seu inglês.</p>
       </header>
-      
+
       {/* Primeira Seção - Imagem à Direita e Links à Esquerda */}
       <main className="flex flex-col lg:flex-row items-center justify-between p-6 bg-gray-800">
         {/* Parte Esquerda - Links */}
@@ -32,13 +32,13 @@ export default function Home() {
 
           <div className="space-y-4 mt-8 text-center">
             <p className="text-white">bem vindo ao nossa rede social Frontierless! Aqui você vai encontrar
-            sua viagem para intercâmbio, com todas as informações atualizadas!</p>
+              sua viagem para intercâmbio, com todas as informações atualizadas!</p>
             <p className="text-white">Se você é novo por aqui e quer ter essa experiência, aproveite e se cadastre clicando abaixo:</p>
-            <Link href="/register" className="block px-6 py-3 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600">
+            <Link href="/register">
               Ir para Cadastrar-se
             </Link>
             <p className="text-white">Se você já tem uma conta, pode acessa-la novamente com o link abaixo!</p>
-            <Link href="/login" className="block px-6 py-3 bg-yellow-500 text-white font-semibold rounded-lg hover:bg-yellow-600">
+            <Link href="/login">
               Ir para Login
             </Link>
           </div>
@@ -73,10 +73,10 @@ export default function Home() {
             <p className="text-white">Para acessar o Feed do nosso site, para mais informações dos projetos para viagens incríveis,
               siga o link abaixo!
             </p>
-            <Link href="/feed" className="block px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600">
+            <Link href="/feed">
               Ir para o Feed
             </Link>
-            
+
           </div>
         </div>
       </section>
@@ -84,5 +84,6 @@ export default function Home() {
       <footer className="bg-gray-100 text-center p-4">
         <p className="text-gray-600">© 2024 FrontierLess. Todos os direitos reservados.</p>
       </footer>
+    </div>
   );
 }

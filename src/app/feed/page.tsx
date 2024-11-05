@@ -1,8 +1,6 @@
 "use client";
 
-import Link from "@/components/Link";
 import React, { useState } from "react";
-import Profile from "@/components/Profile"; // Importando Profile
 
 type Project = {
   key: number;
@@ -83,7 +81,7 @@ export default function Feed() {
         {selectedProject ? (
           <div className="bg-white rounded-lg shadow-md p-4">
             <h2 className="text-xl font-semibold mb-4">{selectedProject.tipo}</h2>
-            
+
             {/* Detalhes do Projeto Selecionado */}
             <div className="mb-4">
               <h3 className="font-semibold">Detalhes do Projeto:</h3>
@@ -92,7 +90,7 @@ export default function Feed() {
               <p><strong>Tipo:</strong> {selectedProject.tipo}</p>
               <p><strong>Autor:</strong> {selectedProject.autor}</p>
             </div>
-            
+
             {/* Comentários */}
             <div className="mb-4">
               <h3 className="font-semibold">Comentários:</h3>

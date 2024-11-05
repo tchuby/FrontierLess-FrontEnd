@@ -21,7 +21,7 @@ interface Props {
 }
 
 export default function Project({ sProject, findProject }: Props) {
-    const { project, setProject, addProject, updateProject } = useProject();
+    const { project, setProject, addProject, updateProject, followProject } = useProject();
     const { addStep, updateStep } = useStep();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -40,6 +40,16 @@ export default function Project({ sProject, findProject }: Props) {
         ));
     };
 
+    const handleFollowProject = async () => {
+        const followProj = {
+            projectId: sProject.id
+        }
+        try {
+            await followProject(followProj);
+        } catch (err) {
+            console.log(err)
+        }
+    }
 
     const saveProject = async () => {
         if (sProject.id && sProject.id !== 0) {
@@ -130,6 +140,7 @@ export default function Project({ sProject, findProject }: Props) {
                             <option value="pós-graduação">Pós-graduação</option>
                             <option value="pesquisa">Pesquisa</option>
                         </Select>
+                        
                         <div>
                             <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Custo total</label>
                             <h2 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
@@ -166,7 +177,7 @@ export default function Project({ sProject, findProject }: Props) {
                 )}
 
                 {findProject && (
-                    <Button type="button">
+                    <Button type="button" onClick={handleFollowProject}>
                         Seguir Projeto
                     </Button>
                 )}
