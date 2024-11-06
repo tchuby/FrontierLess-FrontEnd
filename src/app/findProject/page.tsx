@@ -19,6 +19,7 @@ export default function FindProject() {
     const { getComments } = useComment();
 
     const [loading, setLoading] = useState(true);
+    const [filters, setFilters] = useState({ destination: '', status: '', exchangeType: '' });
 
     useEffect(() => {
         const fetchData = async () => {
@@ -36,6 +37,24 @@ export default function FindProject() {
         fetchData();
     }, []);
 
+    const handleFilterChange = (filterName: string, value: string) => {
+        setFilters((prevFilters) => ({
+            ...prevFilters,
+            [filterName]: value.toLowerCase(),
+        }));
+    };
+
+    const filteredProjects = project.filter(proj =>
+        proj.destination
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .includes(filters.destination.toLowerCase()) && // Garante consistência no valor do input
+        (filters.status === '' || (proj.status || '').toLowerCase() === filters.status) &&
+        (filters.exchangeType === '' || proj.exchangeType.toLowerCase() === filters.exchangeType)
+    );
+
+
     const openProject = (selectedProj: iProject) => {
         const updatedProjects = project.map((proj) =>
             proj.id === selectedProj.id ? { ...proj, selected: true } : { ...proj, selected: false }
@@ -48,24 +67,24 @@ export default function FindProject() {
     return (
         <div className="container mx-auto min-h-screen flex flex-col items-center justify-center">
             <div className="p-4 max-w-xl w-full">
-                <FormSearch />
+                <FormSearch
+                    onFilterChange={(filterName: string, value: string) => handleFilterChange(filterName, value)}
+                />
             </div>
 
             <div className="flex space-x-4 w-full p-4">
                 <div className="w-full flex flex-col space-y-4">
                     <section className="w-full min-h-screen flex flex-col items-center shadow-lg p-4 bg-white rounded-lg">
-                    <div className="w-full text-center mb-4">
-                        <p className="hover:text-blue-900 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Projetos</p>
-                    </div>
-                        {
-                            loading ? (
-                                <LoadingScreen />
-                            ) : (
-                                project.map((proj) => (
-                                    <Card key={proj.id} project={proj} onClick={() => openProject(proj)} />
-                                ))
-                            )
-                        }
+                        <div className="w-full text-center mb-4">
+                            <p className="hover:text-blue-900 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Projetos</p>
+                        </div>
+                        {loading ? (
+                            <LoadingScreen />
+                        ) : (
+                            filteredProjects.map((proj) => (
+                                <Card key={proj.id} project={proj} onClick={() => openProject(proj)} />
+                            ))
+                        )}
                     </section>
                 </div>
 
