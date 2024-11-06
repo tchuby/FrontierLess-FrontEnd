@@ -13,6 +13,7 @@ import LoadingScreen from '@/components/LoadingScreen';
 // Types
 import iProject from "@/types/iProject";
 
+
 export default function FindProject() {
     const { project, setProject, getProjects } = useProject();
     const { getSteps } = useStep();
@@ -28,7 +29,6 @@ export default function FindProject() {
                 const data = await getProjects();
                 const uComment = await getComments(data);
                 const uProject = await getSteps(uComment);
-
                 setProject(uProject);
             } finally {
                 setLoading(false);
