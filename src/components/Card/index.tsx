@@ -1,4 +1,3 @@
-
 import P from '../P';
 import Image from '../Image';
 import StarAvaliation from '../StarAvaliation';
@@ -10,10 +9,25 @@ interface Props {
 }
 
 export default function Card({ project, onClick }: Props) {
+
+    const getFlagImg = () => {
+        const normalizeDestination = (str: string) =>
+            str
+                .trim()
+                .replace(/\(.*?\)/g, "")
+                .toLowerCase()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .replace(/[^a-z0-9]/g, "-")
+                .replace(/-+$/, "");
+        const nDestination = normalizeDestination(project.destination);
+        return `/img/flags/${nDestination}.png`;
+    };
+
     return (
         <button onClick={onClick} className="w-full flex items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl hover:ms-2 hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
             <div className="hidden md:block md:w-2/5 h-full">
-                <Image src={project.img} />
+                <Image src={getFlagImg()} />
             </div>
             <div className="flex justify-between p-4 w-full h-full">
                 <div className="leading-normal">
